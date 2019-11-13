@@ -49,3 +49,5 @@ export interface BotTurn {
     event?: string,
     answers?: UserTurn[],
 }
+
+export const ANYTHING = "ANYTHING"
