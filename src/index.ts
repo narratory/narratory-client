@@ -1,12 +1,12 @@
 import { narratoryCreateAgent } from "./createAgent"
-import { narratoryChat } from "./test"
+import { narratoryChat } from "./chat"
 
 export const chat = narratoryChat
 export const create = narratoryCreateAgent
 
 export interface Agent {
     agentName: string
-    narrative: Array<RobotTurn | string | string[]>
+    narrative: Array<BotTurn | string | string[]>
     questions: Array<UserTurn>
     bridges: string[]
     credentials: any
@@ -30,7 +30,7 @@ export interface Intent {
 export interface UserTurn {
     intent: string[] | Intent
     fallback?: string
-    followup?: RobotTurn | string | string[]
+    followup?: BotTurn | string | string[]
     repair?: string | string[]
 }
 
@@ -41,7 +41,7 @@ export interface Content {
     description?: string
 }
 
-export interface RobotTurn {
+export interface BotTurn {
     say: string | string[],
     content?: Content
     label?: string,

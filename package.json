@@ -4,7 +4,8 @@
   "description": "Client for creating chat and voice-apps using the Narratory service.",
   "main": "out/index.js",
   "scripts": {
-    "watch": "tsc --watch",
+    "prepublish": "tsc",
+    "watch": "tsc --watch --declaration",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "luddilo",
