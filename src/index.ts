@@ -9,7 +9,11 @@ export interface Agent {
     narrative: Array<BotTurn | string | string[]>
     questions: Array<UserTurn>
     bridges: string[]
-    credentials: any
+    credentials: {
+        project_id: string
+        private_key: string
+        client_email: string
+    }
 }
 
 export interface Enum {
