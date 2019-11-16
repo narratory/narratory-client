@@ -1,19 +1,19 @@
 import { Agent } from "./index"
 import axios from "axios"
+import { CREATE_AGENT_URL } from "./settings"
 
 export const create = async (agent: Agent) => {
-    //const url = "https://europe-west1-ludvigtest-xbebjy.cloudfunctions.net/narratoryCreate"
-    const url = "http://localhost:5000/ludvigtest-xbebjy/europe-west1/create"
-
     console.log("Creating agent. This may take up to a minute. Hold on!")
 
     try {
-        const response = await axios.post(url, {
+        const response = await axios.post(CREATE_AGENT_URL, {
             agent: JSON.stringify(agent)
         })
 
         if (response.data && response.data.status == 200) {
-            console.log("Agent created successfully. Please remember to enter the fulfillment url into the Dialogflow console.")
+            console.log("Agent created successfully.")
+            // @TODO: add check if the agent is new, and then post the fulfillment-url
+            // "Please remember to enter the fulfillment url into the Dialogflow console."
             return response
         } else {
             console.log("Something went wrong in agent creation. Message: ", response.data.message)
