@@ -1,22 +1,15 @@
 import { Agent } from "./index"
 import axios from "axios"
 
-export const narratoryCreateAgent = async (agent: Agent) => {
+export const create = async (agent: Agent) => {
     //const url = "https://europe-west1-ludvigtest-xbebjy.cloudfunctions.net/narratoryCreate"
-    const url = "http://localhost:5000/ludvigtest-xbebjy/europe-west1/narratoryCreate"
+    const url = "http://localhost:5000/ludvigtest-xbebjy/europe-west1/create"
 
     console.log("Creating agent. This may take up to a minute. Hold on!")
 
     try {
         const response = await axios.post(url, {
-            agent: JSON.stringify(agent, (key, value) => {
-                if (key == "dynamic") {
-                    console.log(value.toString());
-                    
-                    return value.toString()
-                }
-                return value
-            })
+            agent: JSON.stringify(agent)
         })
 
         if (response.data && response.data.status == 200) {
