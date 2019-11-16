@@ -34,7 +34,7 @@ export interface Intent {
 export interface UserTurn {
     intent: string[] | Intent
     fallback?: string
-    followup?: BotTurn | string | string[]
+    followup?: BotTurn | DynamicBotTurn | string | string[]
     repair?: string | string[]
 }
 
@@ -45,9 +45,22 @@ export interface Content {
     description?: string
 }
 
+export interface RichMessage {
+    say: string
+    content: Content
+}
+
 export interface BotTurn {
     say: string | string[],
     content?: Content
+    label?: string,
+    goto?: string,
+    event?: string,
+    answers?: UserTurn[],
+}
+
+export interface DynamicBotTurn {
+    dynamic(data: Map<string, string>) : BotTurn
     label?: string,
     goto?: string,
     event?: string,

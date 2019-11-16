@@ -1,12 +1,12 @@
 {
   "name": "narratory",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Client for creating chat and voice-apps using the Narratory service.",
   "main": "out/index.js",
   "scripts": {
     "prepublish": "tsc",
     "watch": "tsc --watch --declaration",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node out/tests/dynamicData.js"
   },
   "author": "luddilo",
   "license": "MIT",

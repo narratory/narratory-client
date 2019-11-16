@@ -9,6 +9,7 @@ export const callApi = async (url: string, data: object): Promise<any> => {
         },
         data: JSON.stringify(data)
     })
+    
     return await repson.data
 }
 
