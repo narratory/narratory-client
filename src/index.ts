@@ -1,5 +1,5 @@
 export { create } from "./createAgent"
 export { chat } from "./chat"
+export { getStartTurnIndex } from "./helpers"
 export * from "./interfaces"
-
 export const ANYTHING = "ANYTHING"

@@ -18,7 +18,7 @@ const getCustomStartEvent = async (agent: Agent, startingTurn: AbstractBotTurn |
 }
 
 export async function chat(agent: Agent, startingTurn?: AbstractBotTurn | number) {
-    console.log(`Starting chat with ${agent.agentName}...`);
+    console.log(`Starting chat with ${agent.agentName}.`);
     
     const startEvent = startingTurn ? await getCustomStartEvent(agent, startingTurn): "WELCOME" // Get start-event
 
@@ -26,7 +26,7 @@ export async function chat(agent: Agent, startingTurn?: AbstractBotTurn | number
         event: startEvent,
     })
 
-    console.log(`...chat started!\n`);
+    console.log(`Chat started!\n`);
 
     handleResponse(agent, response) // And then, recursively, handle responses
 }
