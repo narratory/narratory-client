@@ -13,7 +13,6 @@ const getMessage = (message: string, prompt: boolean) => `Bot: ${message + (prom
 
 const getCustomStartEvent = async (agent: Agent, startingTurn: AbstractBotTurn | number): Promise<string> => {
     const result = await Axios.post(CUSTOM_START_URL, {agent, startingTurn})
-    console.log("Startevent", result.data)
     return result.data
 }
 
