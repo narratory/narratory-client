@@ -6,7 +6,9 @@
   "scripts": {
     "prepublish": "tsc",
     "watch": "tsc --watch --declaration",
-    "test": "node out/tests/dynamicData.js"
+    "test:dynamic": "node out/tests/dynamicData.js",
+    "test:formFilling": "node out/tests/formFilling.js",
+    "test:systemEntities": "node out/generateIntents.js"
   },
   "author": "luddilo",
   "license": "MIT",

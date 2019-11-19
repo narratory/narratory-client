@@ -24,6 +24,9 @@ export interface Entity extends AbstractEntity {
 }
 
 export interface SystemEntity extends AbstractEntity {
+    category: string
+    description: string
+    returns: string
     default: string
 }
 

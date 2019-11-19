@@ -5,6 +5,7 @@
     "lib": [
       "es2019"
     ],
+    "moduleResolution": "node",
     "resolveJsonModule": true,
   },
   "include": [
