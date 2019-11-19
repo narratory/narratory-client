@@ -84,7 +84,8 @@ export default async (agent: Agent, turnData: TurnData) => {
     }
     const responses = await sessionClient.detectIntent(input)
     const results = responses[0].queryResult
-    if (process.env.NODE_ENV == "development") {
+    
+    if (process.env.NODE_ENV == "development" && results.diagnosticInfo) {
       console.log(JSON.stringify(struct.decode(results.diagnosticInfo))) // Prints the webhook delay
     }
     const response = await parseDialogflowResponse(results, previousContexts, _sessionId)
@@ -95,7 +96,9 @@ export default async (agent: Agent, turnData: TurnData) => {
   } catch (err) {
     console.log(err)
     return {
-      messages: [{ text: "Woops. I had issues connecting to the server, it seems", fromUser: false }]
+      messages: [{ text: "Woops. I had issues connecting to the server, it seems", fromUser: false }],
+      contexts: [],
+      sessionId: undefined
     }
   }
 };

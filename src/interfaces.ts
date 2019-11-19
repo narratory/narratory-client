@@ -14,15 +14,26 @@ export interface Enum {
     alts: string[]
 }
 
-export interface Entity {
+export interface AbstractEntity {
     name: string
-    enums: Enum[]
     default?: string
 }
 
+export interface Entity extends AbstractEntity {
+    enums: Enum[]
+}
+
+export interface SystemEntity extends AbstractEntity {
+    default: string
+}
+
 export interface Intent {
-    entities?: Entity[]
+    entities?: EntityMap
     examples: string[]
+}
+
+export type EntityMap = {
+    [key: string]: AbstractEntity
 }
 
 export interface UserTurn {
@@ -44,11 +55,16 @@ export interface RichMessage {
     content: Content
 }
 
+export type ConditionMap = {
+    [key: string]: boolean// | string | string[]
+}
+
 export interface AbstractBotTurn {
     label?: string,
     goto?: string,
     event?: string,
     answers?: UserTurn[],
+    cond?: ConditionMap
 }
 
 export interface BotTurn extends AbstractBotTurn {
@@ -58,4 +74,12 @@ export interface BotTurn extends AbstractBotTurn {
 
 export interface DynamicBotTurn extends AbstractBotTurn {
     dynamic: string,
+}
+
+export function isDynamicBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn) {
+    return abstractTurn && (abstractTurn as DynamicBotTurn).dynamic !== undefined
+}
+
+export function isSystemEntity(abstractEntity: AbstractEntity | Entity | SystemEntity) {
+    return abstractEntity && (abstractEntity as Entity).enums === undefined
 }

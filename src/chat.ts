@@ -25,7 +25,7 @@ export async function chat(agent: Agent, startingTurn?: AbstractBotTurn | number
         event: startEvent,
     })
 
-    console.log(`Chat started!\n`);
+    console.log(`Chat started (session id: ${response.sessionId}!\n`);
 
     handleResponse(agent, response) // And then, recursively, handle responses
 }
