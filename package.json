@@ -1,6 +1,6 @@
 {
   "name": "narratory",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Client for creating chat and voice-apps using the Narratory service.",
   "main": "out/index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "watch": "tsc --watch --declaration",
     "test:dynamic": "node out/tests/dynamicData.js",
     "test:formFilling": "node out/tests/formFilling.js",
-    "test:generateIntents": "node out/generateIntents.js"
+    "generate:intents": "node out/generateIntents.js",
+    "generate:languages": "node out/generateLanguages.js"
   },
   "author": "luddilo",
   "license": "MIT",

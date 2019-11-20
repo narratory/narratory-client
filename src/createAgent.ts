@@ -1,9 +1,14 @@
 import { Agent } from "./index"
 import axios from "axios"
 import { CREATE_AGENT_URL } from "./settings"
+import { Language } from "./languages"
 
 export const create = async (agent: Agent) => {
     console.log("Creating agent. This may take up to a minute. Hold on!")
+    
+    if (!agent.language) {
+        agent.language = Language.English
+    }
 
     try {
         const response = await axios.post(CREATE_AGENT_URL, {

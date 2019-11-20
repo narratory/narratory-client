@@ -1,8 +1,11 @@
+import { Language } from "./languages"
+
 export interface Agent {
     agentName: string
+    language?: Language,
     narrative: Array<BotTurn | string | string[]>
-    questions: Array<UserTurn>
-    bridges: string[]
+    questions?: Array<UserTurn>
+    bridges?: string[]
     credentials: {
         project_id: string
         private_key: string
