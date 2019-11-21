@@ -65,12 +65,17 @@ export type ConditionMap = {
     [key: string]: boolean// | string | string[]
 }
 
+export type VariableMap = {
+    [key: string]: string | boolean
+}
+
 export interface AbstractBotTurn {
     label?: string,
     goto?: string,
     event?: string,
     answers?: UserTurn[],
     cond?: ConditionMap
+    set?: VariableMap
 }
 
 export interface BotTurn extends AbstractBotTurn {
