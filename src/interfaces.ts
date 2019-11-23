@@ -5,6 +5,7 @@ export interface Agent {
     language?: Language,
     narrative: Array<BotTurn | string | string[]>
     questions?: Array<UserTurn>
+    defaultFallbacks?: string[]
     bridges?: string[]
     credentials: {
         project_id: string

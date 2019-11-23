@@ -5,12 +5,19 @@ import { Agent } from "./index"
 const v4 = require('uuid/v4');
 
 const parseDialogflowResponse = async (results, oldContexts, sessionId) => {
-  const message: any = results.fulfillmentMessages[0].payload ? struct.decode(results.fulfillmentMessages[0].payload) : {
+  const message: any = results.fulfillmentText ? {
     responses: [{
       text: [results.fulfillmentText],
       richContent: false
     }]
-  }
+  } : {
+      responses: results.fulfillmentMessages.map(message => {
+        return {
+          text: message.text.text,
+          richContent: false
+        }
+      })
+    }
 
   if (isEmpty(message)) {
     message.responses = [{
@@ -62,7 +69,7 @@ export default async (agent: Agent, turnData: TurnData) => {
     "queryInput": {
       "event": {
         "name": turnData.event,
-        "languageCode": "en-US"
+        "languageCode": agent.language
       }
     }
   } : { // Input for MESSAGES
@@ -70,7 +77,7 @@ export default async (agent: Agent, turnData: TurnData) => {
       "queryInput": {
         "text": {
           "text": turnData.message,
-          "languageCode": "en-US"
+          "languageCode": agent.language
         }
       },
       "queryParams": {
@@ -84,7 +91,7 @@ export default async (agent: Agent, turnData: TurnData) => {
     }
     const responses = await sessionClient.detectIntent(input)
     const results = responses[0].queryResult
-    
+
     if (process.env.NODE_ENV == "development" && results.diagnosticInfo) {
       console.log(JSON.stringify(struct.decode(results.diagnosticInfo))) // Prints the webhook delay
     }
