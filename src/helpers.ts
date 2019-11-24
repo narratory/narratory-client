@@ -1,4 +1,5 @@
 import axios from 'axios'
+const fs = require("fs")
 
 export const callApi = async (url: string, data: object): Promise<any> => {
     const repson = await axios({
@@ -28,5 +29,25 @@ export function getStartTurnIndex(args: string[], agent): number | undefined {
     }
     else {
         return undefined
+    }
+}
+
+export async function listDir(dir: string) {
+    try {
+        return fs.promises.readdir(dir);
+    } catch (err) {
+        if (err) {
+            console.error('Error occured while reading directory!', err);
+        }
+    }
+}
+
+export async function readFile(path: string) {
+    try {
+        return fs.promises.readFile(path);
+    } catch (err) {
+        if (err) {
+            console.error('Error occured while reading file!', err);
+        }
     }
 }

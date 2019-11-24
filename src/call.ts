@@ -5,36 +5,25 @@ import { Agent } from "./index"
 const v4 = require('uuid/v4');
 
 const parseDialogflowResponse = async (results, oldContexts, sessionId) => {
-  const message: any = results.fulfillmentText ? {
-    responses: [{
-      text: [results.fulfillmentText],
-      richContent: false
-    }]
-  } : {
-      responses: results.fulfillmentMessages.map(message => {
-        return {
-          text: message.text.text,
-          richContent: false
-        }
-      })
-    }
+  const errorMessages = [
+    "Woops! It seems like I can't connect to Narratory.",
+    "Did you remember to put in the fulfillment url", // and the right authentication key",
+    "in the Dialogflow console?",
+    "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill"
+  ]
 
-  if (isEmpty(message)) {
-    message.responses = [{
-      text: ["Here, we would normally have a chat. Not right now however, I seem to have connection issues to the AI overlord. Try again later!"],
-      richContent: false
-    }]
-  }
+  const messages = isEmpty(results.fulfillmentMessages) ? errorMessages : results.fulfillmentMessages.map(msg => msg.text.text)
 
   return {
-    messages: message.responses.map(response => {
+    messages: messages.map(message => {
       return {
-        ...response,
+        text: message,
+        richContent: false,
         fromUser: false
       }
     }),
     contexts: (results.intent && results.intent.isFallback && results.intent.displayName == "Default Fallback Intent") ? oldContexts : results.outputContexts, // If we get a fallback, we want to keep contexts from before
-    customEvent: message.customEvent ? message.customEvent : null,
+    customEvent: messages.customEvent ? messages.customEvent : null,
     sessionId
   }
 }
@@ -91,6 +80,7 @@ export default async (agent: Agent, turnData: TurnData) => {
     }
     const responses = await sessionClient.detectIntent(input)
     const results = responses[0].queryResult
+    //console.log(responses)
 
     if (process.env.NODE_ENV == "development" && results.diagnosticInfo) {
       console.log(JSON.stringify(struct.decode(results.diagnosticInfo))) // Prints the webhook delay
