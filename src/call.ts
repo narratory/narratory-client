@@ -13,7 +13,15 @@ const parseDialogflowResponse = async (results, oldContexts, sessionId) => {
   ]
 
   const messages = isEmpty(results.fulfillmentMessages) ? errorMessages : results.fulfillmentMessages.map(msg => msg.text.text)
-
+  
+  let endOfConversation = false
+  
+  try {
+    endOfConversation = results.webhookPayload ? (struct.decode(results.webhookPayload).null as any).endOfConversation : false      
+  } catch(err) {
+    console.log("=== Error: Failed to parse if turn was end of conversation. Assuming it wasnt the end.")
+  }
+  
   return {
     messages: messages.map(message => {
       return {
@@ -24,7 +32,8 @@ const parseDialogflowResponse = async (results, oldContexts, sessionId) => {
     }),
     contexts: (results.intent && results.intent.isFallback && results.intent.displayName == "Default Fallback Intent") ? oldContexts : results.outputContexts, // If we get a fallback, we want to keep contexts from before
     customEvent: messages.customEvent ? messages.customEvent : null,
-    sessionId
+    sessionId,
+    endOfConversation
   }
 }
 
