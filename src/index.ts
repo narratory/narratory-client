@@ -7,7 +7,15 @@ export { getStartTurnIndex } from "./helpers"
 export * from "./interfaces"
 
 export { Language } from "./languages"
+
 export const entities = systemEntities
+
 export const ANYTHING : Intent = {
     examples: ["__ANYTHING"]
 }
+
+export const SILENCE : Intent = {
+    examples: ["__SILENCE"]
+}
+
+export const EXIT = "__EXIT"
