@@ -15,7 +15,8 @@ export interface Agent {
 }
 
 export interface Enum {
-    alts: string[]
+    name: string,
+    alts?: string[]
 }
 
 export interface AbstractEntity {
