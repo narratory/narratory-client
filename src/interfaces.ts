@@ -28,6 +28,11 @@ export interface Entity extends AbstractEntity {
     enums: Enum[]
 }
 
+export interface DynamicEntity extends Entity {
+    url: string
+    type: "ON_CREATE" | "AT_RUNTIME" | "ON_CREATE_AND_AT_RUNTIME"
+}
+
 export interface SystemEntity extends AbstractEntity {
     category: string
     description: string
@@ -85,11 +90,15 @@ export interface BotTurn extends AbstractBotTurn {
 }
 
 export interface DynamicBotTurn extends AbstractBotTurn {
-    dynamic: string,
+    url: string,
 }
 
 export function isDynamicBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn) {
-    return abstractTurn && (abstractTurn as DynamicBotTurn).dynamic !== undefined
+    return abstractTurn && (abstractTurn as DynamicBotTurn).url !== undefined
+}
+
+export function isDynamicEntity(abstractEntity: AbstractEntity | Entity | DynamicEntity) {
+    return abstractEntity && (abstractEntity as DynamicEntity).url !== undefined
 }
 
 export function isSystemEntity(abstractEntity: AbstractEntity | Entity | SystemEntity) {

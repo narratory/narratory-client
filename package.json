@@ -1,13 +1,11 @@
 {
   "name": "narratory",
-  "version": "0.0.20",
+  "version": "0.0.24",
   "description": "Client for creating chat and voice-apps using the Narratory service.",
   "main": "out/index.js",
   "scripts": {
     "prepublish": "tsc",
     "watch": "tsc --watch --declaration",
-    "test:dynamic": "node out/tests/dynamicData.js",
-    "test:formFilling": "node out/tests/formFilling.js",
     "generate:intents": "node out/generateIntents.js",
     "generate:languages": "node out/generateLanguages.js"
   },

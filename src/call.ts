@@ -12,12 +12,12 @@ const parseDialogflowResponse = async (results, oldContexts, sessionId) => {
     "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill"
   ]
 
-  const messages = isEmpty(results.fulfillmentMessages) ? errorMessages : results.fulfillmentMessages.map(msg => msg.text.text)
+  const messages = isEmpty(results.fulfillmentMessages) ? errorMessages : results.fulfillmentMessages[0].text.text
   
   let endOfConversation = false
   
   try {
-    endOfConversation = results.webhookPayload ? (struct.decode(results.webhookPayload).null as any).endOfConversation : false      
+    endOfConversation = results.webhookPayload ? (struct.decode(results.webhookPayload) as any).endOfConversation : false      
   } catch(err) {
     console.log("=== Error: Failed to parse if turn was end of conversation. Assuming it wasnt the end.")
   }
