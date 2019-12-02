@@ -3,7 +3,7 @@ import { Language } from "./languages"
 export interface Agent {
     agentName: string
     language?: Language,
-    narrative: Array<BotTurn | string | string[]>
+    narrative: Array<AbstractBotTurn | string | string[]>
     questions?: Array<UserTurn>
     defaultFallbacks?: string[]
     bridges?: string[]
@@ -91,6 +91,12 @@ export interface BotTurn extends AbstractBotTurn {
 
 export interface DynamicBotTurn extends AbstractBotTurn {
     url: string,
+    params?: string[]
+}
+
+export interface WebhookResponse {
+    say: string
+    set?: VariableMap
 }
 
 export function isDynamicBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn) {
