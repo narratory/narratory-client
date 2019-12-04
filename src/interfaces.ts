@@ -77,6 +77,7 @@ export type VariableMap = {
 }
 
 export interface AbstractBotTurn {
+    say?: string | string[]
     label?: string,
     goto?: string,
     event?: string,
@@ -91,12 +92,14 @@ export interface BotTurn extends AbstractBotTurn {
 }
 
 export interface DynamicBotTurn extends AbstractBotTurn {
+    say?: string | string[],
+    content?: Content
     url: string,
     params?: string[]
 }
 
 export interface WebhookResponse {
-    say: string
+    say?: string
     set?: VariableMap
 }
 
