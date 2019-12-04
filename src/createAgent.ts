@@ -4,7 +4,7 @@ import { CREATE_AGENT_URL } from "./settings"
 import { Language } from "./languages"
 
 export const create = async (agent: Agent) => {
-    console.log("Creating agent. This may take up to a minute. Hold on!")
+    console.log("Creating and training agent. This usually takes around 15 seconds. Hold on!")
     
     if (!agent.language) {
         agent.language = Language.English
@@ -13,6 +13,10 @@ export const create = async (agent: Agent) => {
     try {
         const response = await axios.post(CREATE_AGENT_URL, {
             agent: JSON.stringify(agent)
+        }, {
+            headers: {
+                "authorization": `Bearer ${agent.narratoryKey}`
+            }
         })
 
         if (response.data && response.data.status == 200) {

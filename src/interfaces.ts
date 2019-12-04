@@ -7,7 +7,8 @@ export interface Agent {
     questions?: Array<UserTurn>
     defaultFallbacks?: string[]
     bridges?: string[]
-    credentials: {
+    narratoryKey: string
+    googleCredentials: {
         project_id: string
         private_key: string
         client_email: string

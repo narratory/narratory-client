@@ -43,7 +43,7 @@ const getSessionClient = (agent: Agent) => {
   if (!sessionClient) {
     sessionClient = new dialogflow.SessionsClient({
       credentials: {
-        ...agent.credentials
+        ...agent.googleCredentials
       }
     })
   }
@@ -59,7 +59,7 @@ interface TurnData {
 
 export default async (agent: Agent, turnData: TurnData) => {
   const _sessionId = turnData.sessionId ? turnData.sessionId : v4()
-  const sessionPath = getSessionClient(agent).sessionPath(agent.credentials.project_id, _sessionId)
+  const sessionPath = getSessionClient(agent).sessionPath(agent.googleCredentials.project_id, _sessionId)
   const previousContexts = turnData.contexts
 
   const input = turnData.event ? { // Input for EVENTS
