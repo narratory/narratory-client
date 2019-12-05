@@ -53,7 +53,6 @@ export type EntityMap = {
 export interface UserTurn {
     intent: string[] | Intent
     followup?: BotTurn | BotTurn[] | DynamicBotTurn | DynamicBotTurn[] | string | string[]
-    repair?: string | string[]
 }
 
 export interface Content {
@@ -69,7 +68,7 @@ export interface RichMessage {
 }
 
 export type ConditionMap = {
-    [key: string]: boolean | string | string[]
+    [key: string]: boolean | string | string[] | number
 }
 
 export type VariableMap = {
@@ -78,6 +77,7 @@ export type VariableMap = {
 
 export interface AbstractBotTurn {
     say?: string | string[]
+    repair?: boolean
     label?: string,
     goto?: string,
     event?: string,
