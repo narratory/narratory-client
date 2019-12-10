@@ -52,7 +52,7 @@ export type EntityMap = {
 
 export interface UserTurn {
     intent: string[] | Intent
-    followup?: BotTurn | BotTurn[] | DynamicBotTurn | DynamicBotTurn[] | string | string[]
+    followup: BotTurn | BotTurn[] | DynamicBotTurn | DynamicBotTurn[] | string | string[]
 }
 
 export interface Content {
@@ -72,7 +72,7 @@ export type ConditionMap = {
 }
 
 export type VariableMap = {
-    [key: string]: string | boolean
+    [key: string]: string | boolean | number
 }
 
 export interface AbstractBotTurn {
