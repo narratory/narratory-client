@@ -52,7 +52,7 @@ export type EntityMap = {
 
 export interface UserTurn {
     intent: string[] | Intent
-    followup: BotTurn | BotTurn[] | DynamicBotTurn | DynamicBotTurn[] | string | string[]
+    followup: BotTurn | BotTurn[] | DynamicBotTurn | DynamicBotTurn[] | OrderTurn | string | string[]
 }
 
 export interface Content {
@@ -60,6 +60,13 @@ export interface Content {
     video_url?: string
     title?: string
     description?: string
+    order?: {
+        type: string
+        confirmationText: string
+        merchantName: string
+        name: string
+        description: string
+    }
 }
 
 export interface RichMessage {
@@ -88,7 +95,7 @@ export interface AbstractBotTurn {
 
 export interface BotTurn extends AbstractBotTurn {
     say: string | string[],
-    content?: Content
+    content?: Content,
 }
 
 export interface DynamicBotTurn extends AbstractBotTurn {
@@ -103,7 +110,22 @@ export interface WebhookResponse {
     set?: VariableMap
 }
 
-export function isDynamicBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn) {
+export interface OrderTurn extends AbstractBotTurn {
+    orderType: "BOOK" | "RESERVE" | "BUY" | "PLACE_ORDER" | "PAY" | "SEND" | "RESERVE" | "SCHEDULE" | "SUBSCRIBE"
+    name: string
+    description: string
+    imageUrl?: string
+    merchantName?: string
+    confirmationText: string
+    onConfirmed: BotTurn | DynamicBotTurn
+    onCancelled: BotTurn | DynamicBotTurn
+}
+
+export function isOrderBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn) {
+    return abstractTurn && (abstractTurn as OrderTurn).onConfirmed !== undefined
+}
+
+export function isDynamicBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn) {
     return abstractTurn && (abstractTurn as DynamicBotTurn).url !== undefined
 }
 
