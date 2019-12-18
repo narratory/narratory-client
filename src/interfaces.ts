@@ -44,6 +44,7 @@ export interface SystemEntity extends AbstractEntity {
 export interface Intent {
     entities?: EntityMap
     examples: string[]
+    priority?: number
 }
 
 export type EntityMap = {
