@@ -2,6 +2,7 @@ import { struct } from "pb-util"
 import { isEmpty } from "./helpers"
 import dialogflow from "dialogflow"
 import { Agent } from "./index"
+import { API_VERSION } from "./settings";
 const v4 = require('uuid/v4');
 
 const parseDialogflowResponse = async (results, oldContexts, sessionId) => {
@@ -9,7 +10,7 @@ const parseDialogflowResponse = async (results, oldContexts, sessionId) => {
     "Woops! It seems like I can't connect to Narratory.",
     "Did you remember to put in the fulfillment url", // and the right authentication key",
     "in the Dialogflow console's Fulfillment page?",
-    "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill"
+    "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill" + API_VERSION
   ]
 
   const messages = isEmpty(results.fulfillmentMessages) ? errorMessages : results.fulfillmentMessages[0].text.text
