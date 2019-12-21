@@ -53,7 +53,7 @@ export type EntityMap = {
 
 export interface UserTurn {
     intent: string[] | Intent
-    followup: BotTurn | BotTurn[] | DynamicBotTurn | DynamicBotTurn[] | OrderTurn | string | string[]
+    bot: BotTurn | BotTurn[] | DynamicBotTurn | DynamicBotTurn[] | OrderTurn | BridgeTurn | BridgeTurn[] | string | string[]
 }
 
 export interface Content {
@@ -83,26 +83,35 @@ export type VariableMap = {
     [key: string]: string | boolean | number
 }
 
+export interface ConditionalSay {
+    say: string | string[]
+    cond: ConditionMap
+}
+
 export interface AbstractBotTurn {
-    say?: string | string[]
-    repair?: boolean
+    say?: string | string[] 
+    content?: Content
+    repair?: boolean | "PARENT"
     label?: string,
     goto?: string,
-    event?: string,
-    answers?: UserTurn[],
     cond?: ConditionMap
     set?: VariableMap
 }
 
 export interface BotTurn extends AbstractBotTurn {
     say: string | string[],
-    content?: Content,
+    user?: UserTurn[], 
+}
+
+export interface BridgeTurn extends AbstractBotTurn {
+    url?: string
+    params?: string[]
+    bot: BotTurn | BotTurn[] | BridgeTurn | BridgeTurn[] | DynamicBotTurn | DynamicBotTurn[] | OrderTurn | string | string[]
 }
 
 export interface DynamicBotTurn extends AbstractBotTurn {
-    say?: string | string[],
-    content?: Content
-    url: string,
+    url: string
+    user?: UserTurn[], 
     params?: string[]
 }
 
@@ -122,12 +131,16 @@ export interface OrderTurn extends AbstractBotTurn {
     onCancelled: BotTurn | DynamicBotTurn
 }
 
-export function isOrderBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn) {
+export function isOrderBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
     return abstractTurn && (abstractTurn as OrderTurn).onConfirmed !== undefined
 }
 
-export function isDynamicBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn) {
-    return abstractTurn && (abstractTurn as DynamicBotTurn).url !== undefined
+export function isDynamicBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
+    return abstractTurn && (abstractTurn as DynamicBotTurn).url !== undefined && (abstractTurn as BridgeTurn).bot === undefined
+}
+
+export function isBridgeTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
+    return abstractTurn && (abstractTurn as BridgeTurn).bot !== undefined
 }
 
 export function isDynamicEntity(abstractEntity: AbstractEntity | Entity | DynamicEntity) {
@@ -136,4 +149,8 @@ export function isDynamicEntity(abstractEntity: AbstractEntity | Entity | Dynami
 
 export function isSystemEntity(abstractEntity: AbstractEntity | Entity | SystemEntity) {
     return abstractEntity && (abstractEntity as Entity).enums === undefined
+}
+
+export function turnHasWebhook(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
+    return abstractTurn && (abstractTurn as DynamicBotTurn).url !== undefined
 }
