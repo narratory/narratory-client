@@ -4,7 +4,7 @@ export interface Agent {
     agentName: string
     language?: Language,
     narrative: Array<AbstractBotTurn | string | string[]>
-    questions?: Array<UserTurn>
+    userInitiatives?: Array<UserTurn>
     defaultFallbacks?: string[]
     bridges?: string[]
     narratoryKey: string
@@ -13,6 +13,7 @@ export interface Agent {
         private_key: string
         client_email: string
     }
+    errorNotificationWebhook? : string
 }
 
 export interface Enum {
@@ -84,12 +85,12 @@ export type VariableMap = {
 }
 
 export interface ConditionalSay {
-    say: string | string[]
-    cond: ConditionMap
+    text: string | string[]
+    cond?: ConditionMap
 }
 
 export interface AbstractBotTurn {
-    say?: string | string[] 
+    say?: string | ConditionalSay | Array<string | ConditionalSay>
     content?: Content
     repair?: boolean | "PARENT"
     label?: string,
@@ -99,8 +100,8 @@ export interface AbstractBotTurn {
 }
 
 export interface BotTurn extends AbstractBotTurn {
-    say: string | string[],
-    user?: UserTurn[], 
+    say: string | ConditionalSay | Array<string | ConditionalSay>
+    user?: UserTurn[]
 }
 
 export interface BridgeTurn extends AbstractBotTurn {

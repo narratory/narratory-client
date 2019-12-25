@@ -6,7 +6,8 @@ import { CUSTOM_START_URL } from "./settings";
 
 const readline = require('readline').createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
+    removeHistoryDuplicates: true
 })
 
 const getMessage = (message: string, prompt: boolean) => `Bot: ${message + (prompt ? "\n>> " : "")}`
@@ -39,11 +40,20 @@ function handleResponse(agent: Agent, response: any) {
             }
             else {
                 readline.question(getMessage(message.text, true), (input: string) => {
-                    call(agent, {
-                        message: input,
-                        contexts: response.contexts,
-                        sessionId: response.sessionId
-                    }).then(response => handleResponse(agent, response))
+                    if (input !== "") {
+                        call(agent, {
+                            ...response,
+                            message: input,
+                        }).then(response => handleResponse(agent, response))
+                    } else {
+                        handleResponse(agent, {
+                            ...response,
+                            messages: [{
+                                text: "<Input can't be empty>",
+                                fromUser: false
+                            }]
+                        })
+                    }
                 })
             }
         } else {
