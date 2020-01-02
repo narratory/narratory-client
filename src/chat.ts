@@ -24,8 +24,12 @@ export async function chat(agent: Agent, startingTurn?: AbstractBotTurn | number
     const response = await call(agent, { // Initiate the chat with the welcome event
         event: startEvent,
     })
-
-    console.log(`Chat started with ${agent.agentName} (session id: ${response.sessionId}!\n`);
+    
+    if (response.sessionId) {
+        console.log(`Chat started with ${agent.agentName} (session id: ${response.sessionId})\n`);
+    } else {
+        console.log(`Chat could not be started with ${agent.agentName}\n`);
+    }
 
     handleResponse(agent, response) // And then, recursively, handle responses
 }

@@ -5,15 +5,8 @@ import { Agent } from "./index"
 import { API_VERSION } from "./settings";
 const v4 = require('uuid/v4');
 
-const parseDialogflowResponse = async (results, oldContexts, sessionId) => {
-  const errorMessages = [
-    "Woops! It seems like I can't connect to Narratory.",
-    "Did you remember to put in the fulfillment url", // and the right authentication key",
-    "in the Dialogflow console's Fulfillment page?",
-    "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill_" + API_VERSION
-  ]
-
-  const messages = isEmpty(results.fulfillmentMessages) ? errorMessages : results.fulfillmentMessages[0].text.text
+const parseDialogflowResponse = (results: any, oldContexts: any[], sessionId: string) => {
+  const messages = results.fulfillmentMessages[0].text.text
 
   let endOfConversation = false
 
@@ -60,6 +53,7 @@ interface TurnData {
 
 export default async (agent: Agent, turnData: TurnData) => {
   const firstSession = !turnData.sessionId
+  let attempts = 0
   const sessionId = !firstSession ? turnData.sessionId : v4()
   const sessionPath = getSessionClient(agent).sessionPath(agent.googleCredentials.project_id, sessionId)
   const previousContexts = turnData.contexts
@@ -89,11 +83,37 @@ export default async (agent: Agent, turnData: TurnData) => {
     if (process.env.NODE_ENV == "development") {
       console.log("===== Calling Dialogflow")
     }
-    let responses = await sessionClient.detectIntent(input)
-    let results = responses[0].queryResult
+    attempts++
+
+    let responses = (await sessionClient.detectIntent(input))
+      .filter(Boolean) // Since sometimes, the responses array seems to have two extra, "undefined" values
 
     // If we get an error the first attempt, we do one retry. The nature of cloud functions is unfortunately that slow-starts might take enough time for dialogflow to neglect the webhook call
-    if (firstSession && isEmpty(results.fulfillmentMessages)) {
+    if (responses.length == 0 || !responses[0].webhookStatus || ![0, 4].includes(responses[0].webhookStatus.code)) {
+      const errorMessages = [
+        "Woops! It seems like I can't connect to Narratory.",
+        "Did you remember to put in the fulfillment url",
+        "in the Dialogflow console's Fulfillment page?",
+        "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill_" + API_VERSION
+      ]
+      return {
+        messages: errorMessages.map(msg => {
+          return {
+            text: msg,
+            fromUser: false
+          }
+        }),
+        contexts: [],
+        sessionId: undefined,
+        endOfConversation: true
+      }
+    }
+
+    let results = responses[0].queryResult
+
+    // Retries if timed out
+    while (isEmpty(results.fulfillmentMessages) && attempts <= 2) {
+      attempts++
       if (process.env.NODE_ENV == "development") {
         console.log("===== Got error, trying again")
       }
@@ -101,16 +121,12 @@ export default async (agent: Agent, turnData: TurnData) => {
       results = responses[0].queryResult
     }
 
-    if (process.env.NODE_ENV == "development" && results.diagnosticInfo) {
-      console.log(JSON.stringify(struct.decode(results.diagnosticInfo))) // Prints the webhook delay
+    if (isEmpty(results.fulfillmentMessages)) {
+      throw Error("No fulfillment messages returned from Dialogflow")
+    } else {
+      return parseDialogflowResponse(results, previousContexts, sessionId)
     }
-    const response = await parseDialogflowResponse(results, previousContexts, sessionId)
-    if (process.env.NODE_ENV == "development") {
-      console.log("===== Got response from Dialogflow")
-    }
-    return response
   } catch (err) {
-    console.log(err)
     return {
       messages: [{ text: "Woops. I had issues connecting to the server, it seems", fromUser: false }],
       contexts: [],
