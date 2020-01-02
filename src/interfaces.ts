@@ -54,7 +54,7 @@ export type EntityMap = {
 
 export interface UserTurn {
     intent: string[] | Intent
-    bot: BotTurn | BotTurn[] | DynamicBotTurn | DynamicBotTurn[] | OrderTurn | BridgeTurn | BridgeTurn[] | string | string[]
+    bot: BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | string | Array<BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | string>
 }
 
 export interface Content {
@@ -107,7 +107,7 @@ export interface BotTurn extends AbstractBotTurn {
 export interface BridgeTurn extends AbstractBotTurn {
     url?: string
     params?: string[]
-    bot: BotTurn | BotTurn[] | BridgeTurn | BridgeTurn[] | DynamicBotTurn | DynamicBotTurn[] | OrderTurn | string | string[]
+    bot: BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | string | Array<BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | string>
 }
 
 export interface DynamicBotTurn extends AbstractBotTurn {
