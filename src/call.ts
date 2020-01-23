@@ -1,68 +1,32 @@
-import { struct } from "pb-util"
-import { isEmpty } from "./helpers"
-import dialogflow from "dialogflow"
+import { isEmpty, getSessionClient, parseDialogflowResponse } from "./helpers"
 import { Agent } from "./index"
-import { API_VERSION } from "./settings";
+import { API_VERSION, DIALOGFLOW_CALL_ATTEMPTS } from "./settings";
 const v4 = require('uuid/v4');
 
-const parseDialogflowResponse = (results: any, oldContexts: any[], sessionId: string) => {
-  const messages = results.fulfillmentMessages[0].text.text
-
-  let endOfConversation = false
-
-  try {
-    endOfConversation = results.webhookPayload ? (struct.decode(results.webhookPayload) as any).endOfConversation : false
-  } catch (err) {
-    console.log("=== Error: Failed to parse if turn was end of conversation. Assuming it wasnt the end.")
-  }
-
-  return {
-    messages: messages.map(message => {
-      return {
-        text: message,
-        richContent: false,
-        fromUser: false
-      }
-    }),
-    contexts: (results.intent && results.intent.isFallback && results.intent.displayName == "Default Fallback Intent") ? oldContexts : results.outputContexts, // If we get a fallback, we want to keep contexts from before
-    customEvent: messages.customEvent ? messages.customEvent : null,
-    sessionId,
-    endOfConversation
-  }
-}
-
-let sessionClient
-
-const getSessionClient = (agent: Agent) => {
-  if (!sessionClient) {
-    sessionClient = new dialogflow.SessionsClient({
-      credentials: {
-        ...agent.googleCredentials
-      }
-    })
-  }
-  return sessionClient
-}
-
-interface TurnData {
+export const call = async ({
+  agent,
+  sessionId,
+  contexts,
+  event,
+  message
+}: {
+  agent: Agent,
   sessionId?: string
   contexts?: any
   event?: string
   message?: string
-}
-
-export default async (agent: Agent, turnData: TurnData) => {
-  const firstSession = !turnData.sessionId
+}) => {
   let attempts = 0
-  const sessionId = !firstSession ? turnData.sessionId : v4()
-  const sessionPath = getSessionClient(agent).sessionPath(agent.googleCredentials.project_id, sessionId)
-  const previousContexts = turnData.contexts
-
-  const input = turnData.event ? { // Input for EVENTS
+  const _sessionId = sessionId ? sessionId : v4()
+  const sessionClient = getSessionClient(agent)
+  const sessionPath = sessionClient.sessionPath(agent.googleCredentials.project_id, _sessionId)
+  const previousContexts = contexts
+  
+  const input = event ? { // Input for EVENTS
     session: sessionPath,
     queryInput: {
       event: {
-        name: turnData.event,
+        name: event,
         languageCode: agent.language
       }
     }
@@ -70,7 +34,7 @@ export default async (agent: Agent, turnData: TurnData) => {
       session: sessionPath,
       queryInput: {
         text: {
-          text: turnData.message,
+          text: message,
           languageCode: agent.language
         }
       },
@@ -83,7 +47,6 @@ export default async (agent: Agent, turnData: TurnData) => {
     if (process.env.NODE_ENV == "development") {
       console.log("===== Calling Dialogflow")
     }
-    attempts++
 
     let responses = (await sessionClient.detectIntent(input))
       .filter(Boolean) // Since sometimes, the responses array seems to have two extra, "undefined" values
@@ -112,7 +75,7 @@ export default async (agent: Agent, turnData: TurnData) => {
     let results = responses[0].queryResult
 
     // Retries if timed out
-    while (isEmpty(results.fulfillmentMessages) && attempts <= 2) {
+    while (isEmpty(results.fulfillmentMessages) && attempts < DIALOGFLOW_CALL_ATTEMPTS) {
       attempts++
       if (process.env.NODE_ENV == "development") {
         console.log("===== Got error, trying again")
@@ -124,11 +87,11 @@ export default async (agent: Agent, turnData: TurnData) => {
     if (isEmpty(results.fulfillmentMessages)) {
       throw Error("No fulfillment messages returned from Dialogflow")
     } else {
-      return parseDialogflowResponse(results, previousContexts, sessionId)
+      return parseDialogflowResponse(results, previousContexts, _sessionId)
     }
   } catch (err) {
     return {
-      messages: [{ text: "Woops. I had issues connecting to the server, it seems", fromUser: false }],
+      messages: [{ text: "Woops. I had issues connecting to the server. Try again soon!", fromUser: false }],
       contexts: [],
       sessionId: undefined
     }

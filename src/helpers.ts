@@ -1,5 +1,9 @@
 import axios from 'axios'
+import dialogflow from "dialogflow"
+import { struct } from "pb-util"
 const fs = require("fs")
+
+import { Agent } from "./index"
 
 export const callApi = async (url: string, data: object): Promise<any> => {
     const repson = await axios({
@@ -51,3 +55,42 @@ export async function readFile(path: string) {
         }
     }
 }
+
+export const parseDialogflowResponse = (results: any, oldContexts: any[], sessionId: string) => {
+    const messages = results.fulfillmentMessages[0].text.text
+  
+    let endOfConversation = false
+  
+    try {
+      endOfConversation = results.webhookPayload ? (struct.decode(results.webhookPayload) as any).endOfConversation : false
+    } catch (err) {
+      console.log("=== Error: Failed to parse if turn was end of conversation. Assuming it wasnt the end.")
+    }
+  
+    return {
+      messages: messages.map(message => {
+        return {
+          text: message,
+          richContent: false,
+          fromUser: false
+        }
+      }),
+      contexts: (results.intent && results.intent.isFallback && results.intent.displayName == "Default Fallback Intent") ? oldContexts : results.outputContexts, // If we get a fallback, we want to keep contexts from before
+      customEvent: messages.customEvent ? messages.customEvent : null,
+      sessionId,
+      endOfConversation
+    }
+  }
+  
+  let sessionClient
+  
+  export const getSessionClient = (agent: Agent) => {
+    if (!sessionClient) {
+      sessionClient = new dialogflow.SessionsClient({
+        credentials: {
+          ...agent.googleCredentials
+        }
+      })
+    }
+    return sessionClient
+  }

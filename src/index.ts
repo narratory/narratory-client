@@ -3,9 +3,9 @@ import { Intent } from "./interfaces"
 
 export { create } from "./createAgent"
 export { chat } from "./chat"
+export { call } from "./call"
 export { getStartTurnIndex } from "./helpers"
 export * from "./interfaces"
-
 export { Language } from "./languages"
 
 export const entities = systemEntities
@@ -17,7 +17,6 @@ export const SignInSuccess: Intent = {
 export const SignInFailed: Intent = {
     examples: ["__SIGNIN_FAILED", "FAILED"]
 }
-
 
 export const ANYTHING: Intent = {
     examples: ["__ANYTHING"]

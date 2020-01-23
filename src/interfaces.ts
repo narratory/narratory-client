@@ -2,7 +2,7 @@ import { Language } from "./languages"
 
 export interface Agent {
     agentName: string
-    language?: Language,
+    language: Language,
     narrative: Array<AbstractBotTurn | string | string[]>
     userInitiatives?: Array<UserTurn>
     defaultFallbacks?: string[]
@@ -13,7 +13,7 @@ export interface Agent {
         private_key: string
         client_email: string
     }
-    errorNotificationWebhook? : string
+    maxMessagesPerTurn?: 1 | 2
 }
 
 export interface Enum {
