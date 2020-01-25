@@ -108,12 +108,14 @@ export interface BridgeTurn extends AbstractBotTurn {
     url?: string
     params?: string[]
     bot: BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | string | Array<BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | string>
+    asyncWebhook?: boolean
 }
 
 export interface DynamicBotTurn extends AbstractBotTurn {
     url: string
     user?: UserTurn[], 
-    params?: string[]
+    params?: string[],
+    asyncWebhook?: boolean
 }
 
 export interface WebhookResponse {
