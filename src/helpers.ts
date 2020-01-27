@@ -4,6 +4,7 @@ import { struct } from "pb-util"
 const fs = require("fs")
 
 import { Agent } from "./index"
+import { GoogleCredentials } from './interfaces'
 
 export const callApi = async (url: string, data: object): Promise<any> => {
     const repson = await axios({
@@ -56,7 +57,12 @@ export async function readFile(path: string) {
     }
 }
 
-export const parseDialogflowResponse = (results: any, oldContexts: any[], sessionId: string) => {
+export const parseDialogflowResponse = (results: any, oldContexts: any[], sessionId: string): {
+  messages: { text: string, richContent: boolean, fromUser: boolean }[],
+  contexts: any[],
+  sessionId: string,
+  endOfConversation: boolean
+} => {
     const messages = results.fulfillmentMessages[0].text.text
   
     let endOfConversation = false
@@ -76,7 +82,6 @@ export const parseDialogflowResponse = (results: any, oldContexts: any[], sessio
         }
       }),
       contexts: (results.intent && results.intent.isFallback && results.intent.displayName == "Default Fallback Intent") ? oldContexts : results.outputContexts, // If we get a fallback, we want to keep contexts from before
-      customEvent: messages.customEvent ? messages.customEvent : null,
       sessionId,
       endOfConversation
     }
@@ -84,12 +89,10 @@ export const parseDialogflowResponse = (results: any, oldContexts: any[], sessio
   
   let sessionClient
   
-  export const getSessionClient = (agent: Agent) => {
+  export const getSessionClient = (googleCredentials: GoogleCredentials) => {
     if (!sessionClient) {
       sessionClient = new dialogflow.SessionsClient({
-        credentials: {
-          ...agent.googleCredentials
-        }
+        credentials: googleCredentials
       })
     }
     return sessionClient
