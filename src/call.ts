@@ -1,10 +1,6 @@
 import { isEmpty, getSessionClient, parseDialogflowResponse } from "./helpers"
 import { Agent } from "./index"
-import {
-  API_VERSION,
-  DIALOGFLOW_RETRY_ATTEMPTS,
-  DEFAULT_LANGUAGE
-} from "./settings"
+import { API_VERSION, DIALOGFLOW_RETRY_ATTEMPTS, DEFAULT_LANGUAGE } from "./settings"
 import { GoogleCredentials } from "./interfaces"
 import { Language } from "./languages"
 const v4 = require("uuid/v4")
@@ -35,10 +31,7 @@ export const call = async ({
   let attempts = 0
   const _sessionId = sessionId ? sessionId : v4()
   const sessionClient = getSessionClient(googleCredentials)
-  const sessionPath = sessionClient.sessionPath(
-    googleCredentials.project_id,
-    _sessionId
-  )
+  const sessionPath = sessionClient.sessionPath(googleCredentials.project_id, _sessionId)
   const previousContexts = contexts
 
   const input = event
@@ -74,17 +67,12 @@ export const call = async ({
     let responses = (await sessionClient.detectIntent(input)).filter(Boolean) // Since sometimes, the responses array seems to have two extra, "undefined" values
 
     // If we get an error the first attempt, we do one retry. The nature of cloud functions is unfortunately that slow-starts might take enough time for dialogflow to neglect the webhook call
-    if (
-      responses.length == 0 ||
-      !responses[0].webhookStatus ||
-      ![0, 4].includes(responses[0].webhookStatus.code)
-    ) {
+    if (responses.length == 0 || !responses[0].webhookStatus || ![0, 4].includes(responses[0].webhookStatus.code)) {
       const errorMessages = [
         "Woops! It seems like I can't connect to Narratory.",
         "Did you remember to put in the fulfillment url",
         "in the Dialogflow console's Fulfillment page?",
-        "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill_" +
-          API_VERSION
+        "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill_" + API_VERSION
       ]
       return {
         messages: errorMessages.map(msg => {
@@ -102,10 +90,7 @@ export const call = async ({
     let results = responses[0].queryResult
 
     // Retries if timed out
-    while (
-      isEmpty(results.fulfillmentMessages) &&
-      attempts < DIALOGFLOW_RETRY_ATTEMPTS
-    ) {
+    while (isEmpty(results.fulfillmentMessages) && attempts < DIALOGFLOW_RETRY_ATTEMPTS) {
       attempts++
       if (process.env.NODE_ENV == "development") {
         console.log("===== Got error, trying again")

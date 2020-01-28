@@ -59,7 +59,7 @@ function handleResponse(agent: Agent, response: any) {
           if (input !== "") {
             call({
               ...response,
-              agent,
+              googleCredentials: agent.googleCredentials,
               message: input
             }).then(response => handleResponse(agent, response))
           } else {

@@ -4,7 +4,7 @@ import { CREATE_AGENT_URL } from "./settings"
 import { Language } from "./languages"
 
 export const create = async (agent: Agent) => {
-    console.log("Creating and training agent. This usually takes around 15 seconds. Hold on!")
+    console.log("Creating and training agent. This could take up to 60 seconds. Hold on!")
     
     if (!agent.language) {
         agent.language = Language.English
@@ -20,7 +20,7 @@ export const create = async (agent: Agent) => {
         })
 
         if (response.data && response.data.status == 200) {
-            console.log("Agent created successfully.")
+            console.log(`Agent created and trained successfully in ${(response.data.timeElapsed / 1000).toFixed(0)} seconds`)
             // @TODO: add check if the agent is new, and then post the fulfillment-url
             // "Please remember to enter the fulfillment url into the Dialogflow console."
             return response
