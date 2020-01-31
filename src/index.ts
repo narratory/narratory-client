@@ -1,29 +1,10 @@
-import * as systemEntities from "./intents"
-import { Intent } from "./interfaces"
+import * as systemEntities from "./data/systemEntities"
 
-export { create } from "./createAgent"
-export { chat } from "./chat"
-export { call } from "./call"
-export { getStartTurnIndex } from "./helpers"
 export * from "./interfaces"
-export { Language } from "./languages"
-
+export * from "./data/systemIntents"
+export { create } from "./api/create"
+export { chat } from "./api/chat"
+export { call } from "./api/call"
+export { getStartTurnIndex } from "./helpers"
+export { Language } from "./data/languages"
 export const entities = systemEntities
-
-export const SignInSuccess: Intent = {
-    examples: ["__SIGNIN_SUCCESS", "SUCCESS"]
-}
-
-export const SignInFailed: Intent = {
-    examples: ["__SIGNIN_FAILED", "FAILED"]
-}
-
-export const ANYTHING: Intent = {
-    examples: ["__ANYTHING"]
-}
-
-export const SILENCE: Intent = {
-    examples: ["__SILENCE"]
-}
-
-export const EXIT = "__EXIT"

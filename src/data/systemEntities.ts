@@ -1,4 +1,4 @@
-import { SystemEntity } from './interfaces'
+import { SystemEntity } from '../interfaces'
 
 export const dateTime : SystemEntity = {"category":"Date and Time","name":"sys.date-time","description":"Matches date, time, intervals or date and time together","returns":"String in ISO-8601 format <br>or <br>Object: Strings in<br>ISO-8601 format","default":"2:30 pm"}
 

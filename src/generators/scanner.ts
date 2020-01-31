@@ -1,5 +1,5 @@
-import { Intent } from "./index"
-import { listDir, readFile } from "./helpers"
+import { Intent } from "../index"
+import { listDir, readFile } from "../helpers"
 const fs = require("fs")
 
 const getAllIntents = (searchable: any, entityIds: string[]): string[] => {

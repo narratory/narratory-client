@@ -1,8 +1,8 @@
 import { call } from "./call"
-import { Agent } from "./index"
-import { AbstractBotTurn } from "./interfaces"
+import { Agent } from "../index"
+import { AbstractBotTurn } from "../interfaces"
 import Axios from "axios"
-import { CUSTOM_START_URL } from "./settings"
+import { CUSTOM_START_URL } from "../settings"
 
 const readline = require("readline").createInterface({
   input: process.stdin,
@@ -10,24 +10,15 @@ const readline = require("readline").createInterface({
   removeHistoryDuplicates: true
 })
 
-const getMessage = (message: string, prompt: boolean) =>
-  `Bot: ${message + (prompt ? "\n>> " : "")}`
+const getMessage = (message: string, prompt: boolean) => `Bot: ${message + (prompt ? "\n>> " : "")}`
 
-const getCustomStartEvent = async (
-  agent: Agent,
-  startingTurn: AbstractBotTurn | number
-): Promise<string> => {
+const getCustomStartEvent = async (agent: Agent, startingTurn: AbstractBotTurn | number): Promise<string> => {
   const result = await Axios.post(CUSTOM_START_URL, { agent, startingTurn })
   return result.data
 }
 
-export async function chat(
-  agent: Agent,
-  startingTurn?: AbstractBotTurn | number
-) {
-  const startEvent = startingTurn
-    ? await getCustomStartEvent(agent, startingTurn)
-    : "WELCOME" // Get start-event
+export async function chat({ agent, startingTurn }: { agent: Agent; startingTurn?: AbstractBotTurn | number }) {
+  const startEvent = startingTurn ? await getCustomStartEvent(agent, startingTurn) : "WELCOME" // Get start-event
 
   const response = await call({
     googleCredentials: agent.googleCredentials,
@@ -36,9 +27,7 @@ export async function chat(
   }) // Initiate the chat with the welcome event
 
   if (response.sessionId) {
-    console.log(
-      `Chat started with ${agent.agentName} (session id: ${response.sessionId})\n`
-    )
+    console.log(`Chat started with ${agent.agentName} (session id: ${response.sessionId})\n`)
   } else {
     console.log(`Chat could not be started with ${agent.agentName}\n`)
   }

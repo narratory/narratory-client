@@ -1,8 +1,8 @@
-import { isEmpty, getSessionClient, parseDialogflowResponse } from "./helpers"
-import { Agent } from "./index"
-import { API_VERSION, DIALOGFLOW_RETRY_ATTEMPTS, DEFAULT_LANGUAGE } from "./settings"
-import { GoogleCredentials } from "./interfaces"
-import { Language } from "./languages"
+import { isEmpty, getSessionClient, parseDialogflowResponse } from "../helpers"
+import { Agent } from "../index"
+import { API_VERSION, DIALOGFLOW_RETRY_ATTEMPTS, DEFAULT_LANGUAGE } from "../settings"
+import { GoogleCredentials } from "../interfaces"
+import { Language } from "../data/languages"
 const v4 = require("uuid/v4")
 
 export const call = async ({

@@ -1,4 +1,4 @@
-import { isEmpty } from "./helpers"
+import { isEmpty } from "../helpers"
 
 // extracted from https://cloud.google.com/dialogflow/docs/reference/system-entities
 const systemEntitiesArray = require("../data/system_entities.json")

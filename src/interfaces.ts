@@ -1,4 +1,4 @@
-import { Language } from "./languages"
+import { Language } from "./data/languages"
 
 export interface Agent {
   agentName: string
