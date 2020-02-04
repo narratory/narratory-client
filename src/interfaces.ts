@@ -90,7 +90,7 @@ export type ConditionMap = {
 }
 
 export type VariableMap = {
-  [key: string]: string | boolean | number
+  [key: string]: string | boolean | number | object | Array<string | boolean | number | object>
 }
 
 export interface ConditionalSay {

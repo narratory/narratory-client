@@ -72,7 +72,7 @@ export const call = async ({
         "Woops! It seems like I can't connect to Narratory.",
         "Did you remember to put in the fulfillment url",
         "in the Dialogflow console's Fulfillment page?",
-        "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill_" + API_VERSION
+        "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill_v" + API_VERSION
       ]
       return {
         messages: errorMessages.map(msg => {

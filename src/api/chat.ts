@@ -48,6 +48,7 @@ function handleResponse(agent: Agent, response: any) {
           if (input !== "") {
             call({
               ...response,
+              language: agent.language,
               googleCredentials: agent.googleCredentials,
               message: input
             }).then(response => handleResponse(agent, response))
