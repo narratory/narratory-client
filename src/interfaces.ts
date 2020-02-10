@@ -10,6 +10,7 @@ export interface Agent {
   narratoryKey: string
   googleCredentials: GoogleCredentials
   maxMessagesPerTurn?: 1 | 2
+  allowGateway?: boolean
 }
 
 export interface GoogleCredentials {
@@ -49,6 +50,7 @@ export interface Intent {
   entities?: EntityMap
   examples: string[]
   priority?: number
+  allowEntityReset?: boolean
 }
 
 export type EntityMap = {

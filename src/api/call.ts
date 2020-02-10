@@ -26,7 +26,8 @@ export const call = async ({
   }[]
   contexts: any[]
   sessionId: string
-  endOfConversation: boolean
+  endOfConversation: boolean,
+  rawResponse: any
 }> => {
   let attempts = 0
   const _sessionId = sessionId ? sessionId : v4()
@@ -83,7 +84,8 @@ export const call = async ({
         }),
         contexts: [],
         sessionId: undefined,
-        endOfConversation: true
+        endOfConversation: true,
+        rawResponse: responses
       }
     }
 
@@ -102,7 +104,10 @@ export const call = async ({
     if (isEmpty(results.fulfillmentMessages)) {
       throw Error("No fulfillment messages returned from Dialogflow")
     } else {
-      return parseDialogflowResponse(results, previousContexts, _sessionId)
+      return {
+        ...parseDialogflowResponse(results, previousContexts, _sessionId),
+        rawResponse: responses
+      }
     }
   } catch (err) {
     return {
@@ -114,7 +119,8 @@ export const call = async ({
       ],
       contexts: undefined,
       sessionId: undefined,
-      endOfConversation: true
+      endOfConversation: true,
+      rawResponse: undefined
     }
   }
 }
