@@ -50,7 +50,7 @@ export interface Intent {
   entities?: EntityMap
   examples: string[]
   priority?: number
-  allowEntityReset?: boolean
+  noEntityReset?: boolean
 }
 
 export type EntityMap = {
