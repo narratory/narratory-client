@@ -3,6 +3,7 @@ import { Agent } from "../index"
 import { AbstractBotTurn } from "../interfaces"
 import Axios from "axios"
 import { CUSTOM_START_URL } from "../settings"
+const fs = require("fs")
 
 const readline = require("readline").createInterface({
   input: process.stdin,
@@ -17,7 +18,24 @@ const getCustomStartEvent = async (agent: Agent, startingTurn: AbstractBotTurn |
   return result.data
 }
 
-export async function chat({ agent, startingTurn }: { agent: Agent; startingTurn?: AbstractBotTurn | number }) {
+export async function chat({
+  agent,
+  startingTurn,
+  script,
+  recordFile
+}: {
+  agent: Agent
+  startingTurn?: AbstractBotTurn | number
+  script?: string[]
+  recordFile?: string
+}) {
+  const logger = recordFile ? fs.createWriteStream(recordFile, {
+      flags: "a" // 'a' means appending (old data will be preserved)
+    })
+  : null
+
+  const _script = !script || !Array.isArray(script) || script.length == 0 ? [] : script.filter(Boolean).reverse()
+
   const startEvent = startingTurn ? await getCustomStartEvent(agent, startingTurn) : "WELCOME" // Get start-event
 
   const response = await call({
@@ -32,35 +50,49 @@ export async function chat({ agent, startingTurn }: { agent: Agent; startingTurn
     console.log(`Chat could not be started with ${agent.agentName}\n`)
   }
 
-  handleResponse(agent, response) // And then, recursively, handle responses
+  await handleResponseWithScript({ agent, response, script: _script, logger }) // And then, recursively, handle responses
 }
 
-function handleResponse(agent: Agent, response: any) {
+export function handleResponseWithChat({
+  agent,
+  response,
+  logger
+}: {
+  agent: Agent
+  response: any
+  logger: any
+}) {
   response.messages.map((message, index) => {
     if (index == response.messages.length - 1) {
       // If last message, we make a prompt and then call our agent with the input
       if (response.endOfConversation) {
         console.log(getMessage(message.text, false))
         console.log("\nEnd of conversation")
+        logger && logger.end()
         process.exit()
       } else {
         readline.question(getMessage(message.text, true), (input: string) => {
           if (input !== "") {
+            logger && logger.write(`${input}\n`)
             call({
               ...response,
               language: agent.language,
               googleCredentials: agent.googleCredentials,
               message: input
-            }).then(response => handleResponse(agent, response))
+            }).then(response => handleResponseWithChat({ agent, response, logger }))
           } else {
-            handleResponse(agent, {
-              ...response,
-              messages: [
-                {
-                  text: "<Input can't be empty>",
-                  fromUser: false
-                }
-              ]
+            handleResponseWithChat({
+              agent,
+              response: {
+                ...response,
+                messages: [
+                  {
+                    text: "<Input can't be empty>",
+                    fromUser: false
+                  }
+                ]
+              },
+              logger
             })
           }
         })
@@ -69,4 +101,46 @@ function handleResponse(agent: Agent, response: any) {
       console.log(getMessage(message.text, false)) // Otherwise we just print the message
     }
   })
+}
+
+async function handleResponseWithScript({
+  agent,
+  response,
+  script,
+  logger
+}: {
+  agent: Agent
+  response: any
+  script: string[]
+  logger: any
+}) {
+  if (script.length == 0) {
+    handleResponseWithChat({ agent, response, logger })
+  } else {
+    for (let index = 0; index < response.messages.length; index++) {
+      const message = response.messages[index]
+      console.log(getMessage(message.text, false))
+      if (index == response.messages.length - 1) {
+        // If last message, we make a prompt and then call our agent with the input
+        if (response.endOfConversation) {
+          console.log("\nEnd of conversation")
+          logger && logger.end()
+          process.exit()
+        } else {
+          const input = script.pop()
+          console.log("User: " + input)
+          
+          logger && logger.write(`${input}\n`)
+
+          const _response = await call({
+            ...response,
+            language: agent.language,
+            googleCredentials: agent.googleCredentials,
+            message: input
+          })
+          await handleResponseWithScript({ agent, response: _response, script, logger })
+        }
+      }
+    }
+  }
 }
