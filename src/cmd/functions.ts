@@ -1,5 +1,6 @@
 import { Agent, create, chat, getStartTurnIndex } from "../"
 import { deploy } from "../api/deploy"
+const fs = require("fs")
 
 export const start = async () => {
   // Create our agent (or update it, if it already has been created)
@@ -7,41 +8,58 @@ export const start = async () => {
   await runChat()
 }
 
-const agent : Agent = require(process.cwd() + "/out/" + process.env.npm_package_config_agent.replace(".ts", ".js")).default
+const agent: Agent = require(process.cwd() + "/out/" + process.env.npm_package_config_agent.replace(".ts", ".js"))
+  .default
+
+const flags = ["script", "record", "local", "startIndex"]
 
 export const runChat = async () => {
   console.log("Starting chat [Ctrl/Cmd + C to exit]\n")
   const args = process.argv.slice(2)
-  let script : string[]
-  let recordFile : string
+  let script: string[]
+  let recordFile: string
+  let startIndex = 0
 
   for (const arg of args) {
     if (arg.includes("--script=")) {
       const fileName = arg.replace("--script=", "")
-      var fs = require('fs');
       try {
-        script = fs.readFileSync(fileName).toString().split("\n")
-      } catch(err) {
+        script = fs
+          .readFileSync(fileName)
+          .toString()
+          .split("\n")
+      } catch (err) {
         if (err) {
           console.log("Could not read script file " + fileName)
           script = []
         }
       }
-    } else if (arg.includes("--record")) {
+    } else if (arg.includes("--record=")) {
       recordFile = arg.replace("--record=", "")
       if (fs.existsSync(recordFile)) {
-        console.log("Overwriting old file " + recordFile)
         fs.writeFileSync(recordFile, "")
       }
+    } else if (arg.includes("--startIndex=")) {
+      const newIndex = getStartTurnIndex(arg.replace("--startIndex=", ""), agent.narrative.length)
+      startIndex = newIndex ? newIndex : startIndex
     }
   }
 
   if (!script) {
-    script = args.filter(arg => !arg.includes("--script") && !arg.includes("--record"))
+    script = args.filter(
+      arg => {
+        for (const flag of flags) {
+          if (arg.includes(`--${flag}`)) {
+            return false
+          }
+        }
+        return true
+      }
+    )
   }
 
   // Start a chat with our agent, in command-line
-  chat({ agent, startingTurn: getStartTurnIndex(process.argv, agent), script, recordFile })
+  chat({ agent, startIndex, script, recordFile })
 }
 
 // Update our agent

@@ -13,19 +13,14 @@ const readline = require("readline").createInterface({
 
 const getMessage = (message: string, prompt: boolean) => `Bot: ${message + (prompt ? "\n>> " : "")}`
 
-const getCustomStartEvent = async (agent: Agent, startingTurn: AbstractBotTurn | number): Promise<string> => {
-  const result = await Axios.post(CUSTOM_START_URL, { agent, startingTurn })
-  return result.data
-}
-
 export async function chat({
   agent,
-  startingTurn,
+  startIndex,
   script,
   recordFile
 }: {
   agent: Agent
-  startingTurn?: AbstractBotTurn | number
+  startIndex?: number
   script?: string[]
   recordFile?: string
 }) {
@@ -36,7 +31,7 @@ export async function chat({
 
   const _script = !script || !Array.isArray(script) || script.length == 0 ? [] : script.filter(Boolean).reverse()
 
-  const startEvent = startingTurn ? await getCustomStartEvent(agent, startingTurn) : "WELCOME" // Get start-event
+  const startEvent = startIndex > 0 ? `b-${startIndex}` : "WELCOME" // Get start-event
 
   const response = await call({
     googleCredentials: agent.googleCredentials,
