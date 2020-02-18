@@ -1,5 +1,5 @@
+import { struct } from "pb-util"
 import { isEmpty, getSessionClient, parseDialogflowResponse } from "../helpers"
-import { Agent } from "../index"
 import { API_VERSION, DIALOGFLOW_RETRY_ATTEMPTS, DEFAULT_LANGUAGE } from "../settings"
 import { GoogleCredentials } from "../interfaces"
 import { Language } from "../data/languages"
@@ -11,7 +11,8 @@ export const call = async ({
   sessionId,
   contexts,
   event,
-  message
+  message,
+  local
 }: {
   googleCredentials: GoogleCredentials
   language?: Language
@@ -19,6 +20,7 @@ export const call = async ({
   contexts?: any
   event?: string
   message?: string
+  local?: boolean
 }): Promise<{
   messages: {
     text: string
@@ -35,7 +37,7 @@ export const call = async ({
   const sessionPath = sessionClient.sessionPath(googleCredentials.project_id, _sessionId)
   const previousContexts = contexts
 
-  const input = event
+  let input : any = event
     ? {
         // Input for EVENTS
         session: sessionPath,
@@ -59,6 +61,15 @@ export const call = async ({
           contexts: previousContexts
         }
       }
+
+  if (local) {
+    input.queryParams = {
+      ...input.queryParams,
+      payload: struct.encode({
+        localDevelopment: true
+      })
+    }
+  }
 
   try {
     if (process.env.NODE_ENV == "development") {

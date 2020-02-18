@@ -1,7 +1,7 @@
-import { build } from "./functions";
+import { runBuild } from "./functions";
 
 const runAsync = async () => {
-  await build()
+  await runBuild()
   process.exit()
 }
 

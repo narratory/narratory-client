@@ -15,11 +15,13 @@ const getMessage = (message: string, prompt: boolean) => `Bot: ${message + (prom
 
 export async function chat({
   agent,
+  local = false,
   startIndex,
   script,
   recordFile
 }: {
-  agent: Agent
+  agent: Agent,
+  local?: boolean,
   startIndex?: number
   script?: string[]
   recordFile?: string
@@ -36,7 +38,8 @@ export async function chat({
   const response = await call({
     googleCredentials: agent.googleCredentials,
     language: agent.language,
-    event: startEvent
+    event: startEvent,
+    local
   }) // Initiate the chat with the welcome event
 
   if (response.sessionId) {
@@ -45,15 +48,17 @@ export async function chat({
     console.log(`Chat could not be started with ${agent.agentName}\n`)
   }
 
-  await handleResponseWithScript({ agent, response, script: _script, logger }) // And then, recursively, handle responses
+  await handleResponseWithScript({ agent, response, local, script: _script, logger }) // And then, recursively, handle responses
 }
 
 export function handleResponseWithChat({
   agent,
   response,
+  local,
   logger
 }: {
   agent: Agent
+  local?: boolean
   response: any
   logger: any
 }) {
@@ -73,8 +78,9 @@ export function handleResponseWithChat({
               ...response,
               language: agent.language,
               googleCredentials: agent.googleCredentials,
-              message: input
-            }).then(response => handleResponseWithChat({ agent, response, logger }))
+              message: input,
+              local
+            }).then(response => handleResponseWithChat({ agent, response, local, logger }))
           } else {
             handleResponseWithChat({
               agent,
@@ -87,6 +93,7 @@ export function handleResponseWithChat({
                   }
                 ]
               },
+              local,
               logger
             })
           }
@@ -101,16 +108,18 @@ export function handleResponseWithChat({
 async function handleResponseWithScript({
   agent,
   response,
+  local,
   script,
   logger
 }: {
   agent: Agent
   response: any
+  local?: boolean
   script: string[]
   logger: any
 }) {
   if (script.length == 0) {
-    handleResponseWithChat({ agent, response, logger })
+    handleResponseWithChat({ agent, response, local, logger })
   } else {
     for (let index = 0; index < response.messages.length; index++) {
       const message = response.messages[index]
@@ -131,9 +140,10 @@ async function handleResponseWithScript({
             ...response,
             language: agent.language,
             googleCredentials: agent.googleCredentials,
-            message: input
+            message: input,
+            local
           })
-          await handleResponseWithScript({ agent, response: _response, script, logger })
+          await handleResponseWithScript({ agent, response: _response, local, script, logger })
         }
       }
     }

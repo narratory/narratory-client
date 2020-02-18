@@ -1,10 +1,10 @@
-import { Agent, create, chat, getStartTurnIndex } from "../"
+import { Agent, build, chat, getStartTurnIndex } from "../"
 import { deploy } from "../api/deploy"
 const fs = require("fs")
 
 export const start = async () => {
   // Create our agent (or update it, if it already has been created)
-  await build()
+  await runBuild()
   await runChat()
 }
 
@@ -59,14 +59,14 @@ export const runChat = async () => {
   }
 
   // Start a chat with our agent, in command-line
-  chat({ agent, startIndex, script, recordFile })
+  chat({ agent, local: args.includes("--local"), startIndex, script, recordFile })
 }
 
 // Update our agent
-export const build = async () => {
+export const runBuild = async () => {
   console.log("Building agent [Ctrl/Cmd + C to exit]\n")
 
-  await create({ agent, local: process.argv.includes("--local") })
+  await build({ agent, dry: process.argv.includes("--dry"), local: process.argv.includes("--local") })
 }
 
 // Deploy our agent to Google assistant
