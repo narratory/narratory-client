@@ -4,14 +4,18 @@ const fs = require("fs")
 
 export const start = async () => {
   // Create our agent (or update it, if it already has been created)
-  await runBuild()
-  await runChat()
+  const response = await runBuild()
+  if (response) {
+    await runChat()
+  } else {
+    process.exit()
+  }
 }
 
 const agent: Agent = require(process.cwd() + "/out/" + process.env.npm_package_config_agent.replace(".ts", ".js"))
   .default
 
-const flags = ["script", "record", "local", "startIndex"]
+const flags = ["script", "record", "local", "startIndex", "dry"]
 
 export const runChat = async () => {
   console.log("Starting chat [Ctrl/Cmd + C to exit]\n")
@@ -66,7 +70,7 @@ export const runChat = async () => {
 export const runBuild = async () => {
   console.log("Building agent [Ctrl/Cmd + C to exit]\n")
 
-  await build({ agent, dry: process.argv.includes("--dry"), local: process.argv.includes("--local") })
+  return await build({ agent, dry: process.argv.includes("--dry"), local: process.argv.includes("--local") })
 }
 
 // Deploy our agent to Google assistant
