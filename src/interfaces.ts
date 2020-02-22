@@ -88,7 +88,10 @@ export interface RichMessage {
 }
 
 export type ConditionMap = {
-  [key: string]: boolean | string | string[] | number
+  [key: string]: boolean | string | string[] | number | ConditionMap
+  NOT?: ConditionMap,
+  OR?: ConditionMap,
+  AND?: ConditionMap
 }
 
 export type VariableMap = {
