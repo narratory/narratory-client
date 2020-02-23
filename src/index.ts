@@ -9,3 +9,4 @@ export { deploy } from "./api/deploy"
 export { getStartTurnIndex } from "./helpers"
 export { Language } from "./data/languages"
 export const entities = systemEntities
+export { DELAY_AFTER_TRAINING } from "./settings"

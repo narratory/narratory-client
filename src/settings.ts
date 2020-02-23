@@ -8,3 +8,4 @@ export const DEPLOY_AGENT_URL = "https://europe-west1-narratory-1.cloudfunctions
 export const DEPLOY_AGENT_URL_LOCAL = "http://localhost:5000/narratory-1/europe-west1/deploy_v" + API_VERSION 
 export const DIALOGFLOW_RETRY_ATTEMPTS = 2
 export const DEFAULT_LANGUAGE = Language.EnglishUS
+export const DELAY_AFTER_TRAINING = 5000

@@ -1,10 +1,14 @@
 import { Agent, build, chat, getStartTurnIndex } from "../"
 import { deploy } from "../api/deploy"
+import { sleep } from "../helpers"
+import { DELAY_AFTER_TRAINING } from "../settings"
 const fs = require("fs")
 
 export const start = async () => {
   // Create our agent (or update it, if it already has been created)
-  const response = await runBuild()
+  const response = await runBuild({ skipSleepAfterTraining: true })
+  console.log("Sleeping for " + DELAY_AFTER_TRAINING / 1000 + " seconds to make sure our agent is ready.")
+  await sleep(DELAY_AFTER_TRAINING)
   if (response) {
     await runChat()
   } else {
@@ -13,7 +17,7 @@ export const start = async () => {
 }
 
 const agent: Agent = require(process.cwd() + "/out/" + process.env.npm_package_config_agent.replace(".ts", ".js"))
-  .default
+.default
 
 const flags = ["script", "record", "local", "startIndex", "dry"]
 
@@ -23,15 +27,15 @@ export const runChat = async () => {
   let script: string[]
   let recordFile: string
   let startIndex = 0
-
+  
   for (const arg of args) {
     if (arg.includes("--script=")) {
       const fileName = arg.replace("--script=", "")
       try {
         script = fs
-          .readFileSync(fileName)
-          .toString()
-          .split("\n")
+        .readFileSync(fileName)
+        .toString()
+        .split("\n")
       } catch (err) {
         if (err) {
           console.log("Could not read script file " + fileName)
@@ -48,29 +52,27 @@ export const runChat = async () => {
       startIndex = newIndex ? newIndex : startIndex
     }
   }
-
+  
   if (!script) {
-    script = args.filter(
-      arg => {
-        for (const flag of flags) {
-          if (arg.includes(`--${flag}`)) {
-            return false
-          }
+    script = args.filter(arg => {
+      for (const flag of flags) {
+        if (arg.includes(`--${flag}`)) {
+          return false
         }
-        return true
       }
-    )
+      return true
+    })
   }
-
+  
   // Start a chat with our agent, in command-line
   chat({ agent, local: args.includes("--local"), startIndex, script, recordFile })
 }
 
 // Update our agent
-export const runBuild = async () => {
+export const runBuild = async ({ skipSleepAfterTraining = false}: { skipSleepAfterTraining?: boolean } = {}) => {
   console.log("Building agent [Ctrl/Cmd + C to exit]\n")
-
-  return await build({ agent, dry: process.argv.includes("--dry"), local: process.argv.includes("--local") })
+  
+  return await build({ agent, skipSleepAfterTraining, dry: process.argv.includes("--dry"), local: process.argv.includes("--local") })
 }
 
 // Deploy our agent to Google assistant

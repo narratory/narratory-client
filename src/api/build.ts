@@ -3,7 +3,17 @@ import axios from "axios"
 import { CREATE_AGENT_URL, CREATE_AGENT_URL_LOCAL } from "../settings"
 import { Language } from "../data/languages"
 
-export const build = async ({ agent, dry = false, local = false }: { agent: Agent; dry: boolean, local: boolean }) => {
+export const build = async ({
+  agent,
+  dry = false,
+  skipSleepAfterTraining,
+  local = false
+}: {
+  agent: Agent
+  dry: boolean
+  skipSleepAfterTraining: boolean
+  local: boolean
+}) => {
   if (local) {
     console.log("USING LOCAL CREATE SERVER")
   }
@@ -19,7 +29,8 @@ export const build = async ({ agent, dry = false, local = false }: { agent: Agen
       local ? CREATE_AGENT_URL_LOCAL : CREATE_AGENT_URL,
       {
         agent: JSON.stringify(agent),
-        dry
+        dry,
+        skipSleepAfterTraining
       },
       {
         headers: {
