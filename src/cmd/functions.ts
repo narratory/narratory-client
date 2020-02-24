@@ -19,7 +19,7 @@ export const start = async () => {
 const agent: Agent = require(process.cwd() + "/out/" + process.env.npm_package_config_agent.replace(".ts", ".js"))
 .default
 
-const flags = ["script", "record", "local", "startIndex", "dry"]
+const flags = ["script", "record", "local", "startIndex", "dry", "version"]
 
 export const runChat = async () => {
   console.log("Starting chat [Ctrl/Cmd + C to exit]\n")
@@ -78,7 +78,20 @@ export const runBuild = async ({ skipSleepAfterTraining = false}: { skipSleepAft
 // Deploy our agent to Google assistant
 
 export const runDeploy = async () => {
-  const version = process.env.npm_package_version ? process.env.npm_package_version : "0.1.0"
+  let version : string
+  for (const arg of process.argv) {
+    if (arg.includes("--version=")) {
+      const _version = arg.replace("--version=", "")
+      if (_version !== "") {
+        version = _version
+      }
+    }
+  }
+
+  if (!version) {
+    console.error("Error: Version has to be set using flag --version. For example, 'npm run deploy -- --version=3'")
+    process.exit()
+  }
   console.log(`Deploying agent with version ${version} [Ctrl/Cmd + C to exit]\n`)
   await deploy({ agent, version, local: process.argv.includes("--local") })
 }
