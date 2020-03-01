@@ -1,6 +1,6 @@
 import { Agent, build, chat, getStartTurnIndex } from "../"
 import { deploy } from "../api/deploy"
-import { sleep } from "../helpers"
+import { sleep, getNamedIntentsFromFolder } from "../helpers"
 import { DELAY_AFTER_TRAINING } from "../settings"
 const fs = require("fs")
 
@@ -71,8 +71,8 @@ export const runChat = async () => {
 // Update our agent
 export const runBuild = async ({ skipSleepAfterTraining = false}: { skipSleepAfterTraining?: boolean } = {}) => {
   console.log("Building agent [Ctrl/Cmd + C to exit]\n")
-  
-  return await build({ agent, skipSleepAfterTraining, dry: process.argv.includes("--dry"), local: process.argv.includes("--local") })
+  const intents = await getNamedIntentsFromFolder("src")
+  return await build({ agent, intents, skipSleepAfterTraining, dry: process.argv.includes("--dry"), local: process.argv.includes("--local") })
 }
 
 // Deploy our agent to Google assistant

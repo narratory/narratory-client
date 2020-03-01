@@ -2,6 +2,7 @@ import axios from "axios"
 import dialogflow from "dialogflow"
 import { struct } from "pb-util"
 const fs = require("fs")
+import { Intent } from "./index"
 
 import { GoogleCredentials } from "./interfaces"
 
@@ -32,7 +33,7 @@ export function getStartTurnIndex(index: string, maxIndex: number): number {
 
 export async function listDir(dir: string) {
   try {
-    return fs.promises.readdir(dir)
+    return fs.promises.readdir(dir, { withFileTypes: true })
   } catch (err) {
     if (err) {
       console.error("Error occured while reading directory!", err)
@@ -101,3 +102,51 @@ export const getSessionClient = (googleCredentials: GoogleCredentials) => {
 }
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+export function getVariableName<TResult>(name: () => TResult) {
+  var m = new RegExp("return (.*);").exec(name + "")
+  if (m == null) throw new Error("The function does not contain a statement matching 'return variableName;'")
+  return m[1]
+}
+
+const getIntentNames = (searchable: any): Array<any> => {
+  const intentNames: Array<any> = []
+  if (typeof searchable == "object") {
+    Object.keys(searchable).forEach(key => {
+      const obj = searchable[key]
+      if ("examples" in obj) {
+        intentNames.push([key, obj])
+      }
+    })
+  }
+  return intentNames
+}
+
+export const getNamedIntentsFromFolder = async (path: string, intentNames?: {[key: string]: Intent}) => {
+  if (!intentNames) {
+    intentNames = {}
+  }
+  const files = await listDir(path)
+
+  for (const file of files) {
+    const fileName = file.name
+    if (file.isFile()) {
+      if (fileName.includes(".ts")) {
+        try {
+          const jsPath = "out/" + path.slice(4) + "/" + fileName.replace(".ts", ".js")
+          const filePath = `${process.cwd()}/${jsPath}`
+
+          let imports = require(filePath)
+          getIntentNames(imports).forEach(intentArr => {
+            intentNames[intentArr[0]] = intentArr[1]
+          })
+        } catch (err) {
+          console.log(`Skipped file ${fileName} due to error. Error: ${err}`)
+        }
+      }
+    } else {
+      await getNamedIntentsFromFolder(`${path}/${fileName}`, intentNames)
+    }
+  }
+  return intentNames
+}

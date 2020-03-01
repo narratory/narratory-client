@@ -2,14 +2,17 @@ import { Agent } from "../index"
 import axios from "axios"
 import { CREATE_AGENT_URL, CREATE_AGENT_URL_LOCAL } from "../settings"
 import { Language } from "../data/languages"
+import { Intent } from "../index"
 
 export const build = async ({
   agent,
+  intents,
   dry = false,
   skipSleepAfterTraining,
   local = false
 }: {
   agent: Agent
+  intents: { [key: string]: Intent },
   dry: boolean
   skipSleepAfterTraining: boolean
   local: boolean
@@ -29,6 +32,7 @@ export const build = async ({
       local ? CREATE_AGENT_URL_LOCAL : CREATE_AGENT_URL,
       {
         agent: JSON.stringify(agent),
+        intents: JSON.stringify(intents),
         dry,
         skipSleepAfterTraining
       },

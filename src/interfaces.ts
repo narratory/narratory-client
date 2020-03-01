@@ -11,6 +11,7 @@ export interface Agent {
   googleCredentials: GoogleCredentials
   maxMessagesPerTurn?: 1 | 2
   allowGateway?: boolean
+  fallbackWebhook?: string
 }
 
 export interface GoogleCredentials {
@@ -47,6 +48,7 @@ export interface SystemEntity extends AbstractEntity {
 }
 
 export interface Intent {
+  name?: string
   entities?: EntityMap
   examples: string[]
   priority?: number
