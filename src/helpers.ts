@@ -109,13 +109,13 @@ export function getVariableName<TResult>(name: () => TResult) {
   return m[1]
 }
 
-const getIntentNames = (searchable: any): Array<any> => {
+const getIntentNames = (_exports: any): Array<any> => {
   const intentNames: Array<any> = []
-  if (typeof searchable == "object") {
-    Object.keys(searchable).forEach(key => {
-      const obj = searchable[key]
-      if ("examples" in obj) {
-        intentNames.push([key, obj])
+  if (typeof _exports === "object") { // Should always be true
+    Object.keys(_exports).forEach(key => { // Loop over all exported variables
+      const exportedVariable = _exports[key]
+      if (typeof exportedVariable == "object" && "examples" in exportedVariable) { // Identify intents
+        intentNames.push([key, exportedVariable])
       }
     })
   }
@@ -136,8 +136,8 @@ export const getNamedIntentsFromFolder = async (path: string, intentNames?: {[ke
           const jsPath = "out/" + path.slice(4) + "/" + fileName.replace(".ts", ".js")
           const filePath = `${process.cwd()}/${jsPath}`
 
-          let imports = require(filePath)
-          getIntentNames(imports).forEach(intentArr => {
+          let _exports = require(filePath)
+          getIntentNames(_exports).forEach(intentArr => {
             intentNames[intentArr[0]] = intentArr[1]
           })
         } catch (err) {
