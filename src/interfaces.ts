@@ -107,6 +107,7 @@ export interface RichSay {
   text: string | string[]
   cond?: ConditionMap
   suggestions?: string[]
+  content?: Order //| BasicCard | Image | BrowseCarousel | MediaObject | Table | List | Carousel
 }
 
 export interface AbstractBotTurn {
