@@ -37,7 +37,7 @@ export interface Entity extends AbstractEntity {
 
 export interface DynamicEntity extends Entity {
   url: string
-  type: "ON_CREATE" | "AT_RUNTIME" | "ON_CREATE_AND_AT_RUNTIME"
+  type: "BUILD" | "SESSION" | "TURN"
 }
 
 export interface SystemEntity extends AbstractEntity {
