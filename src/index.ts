@@ -1,6 +1,7 @@
 import * as systemEntities from "./data/systemEntities"
 
 export * from "./interfaces"
+export * from "./richContent"
 export * from "./data/systemIntents"
 export { build } from "./api/build"
 export { chat } from "./api/chat"

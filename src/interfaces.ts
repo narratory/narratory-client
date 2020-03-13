@@ -1,4 +1,5 @@
 import { Language } from "./data/languages"
+import { Card, Button, Content } from "./richContent"
 
 export interface Agent {
   agentName: string
@@ -70,20 +71,6 @@ export interface UserTurn {
     | Array<BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | string>
 }
 
-export interface Content {
-  image_url?: string
-  video_url?: string
-  title?: string
-  description?: string
-  order?: {
-    type: string
-    confirmationText: string
-    merchantName: string
-    name: string
-    description: string
-  }
-}
-
 export interface Order {
   type: string
   confirmationText: string
@@ -107,7 +94,8 @@ export interface RichSay {
   text: string | string[]
   cond?: ConditionMap
   suggestions?: string[]
-  content?: Order //| BasicCard | Image | BrowseCarousel | MediaObject | Table | List | Carousel
+  content?: Content
+  //| BasicCard | Image | BrowseCarousel | MediaObject | Table | List | Carousel
 }
 
 export interface AbstractBotTurn {
