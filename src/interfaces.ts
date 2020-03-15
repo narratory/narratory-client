@@ -1,5 +1,5 @@
 import { Language } from "./data/languages"
-import { Card, Button, Content } from "./richContent"
+import { Content } from "./richContent"
 
 export interface Agent {
   agentName: string
@@ -12,6 +12,7 @@ export interface Agent {
   googleCredentials: GoogleCredentials
   maxMessagesPerTurn?: 1 | 2
   allowGateway?: boolean
+  skipQueryRepeat?: boolean
   fallbackWebhook?: string
 }
 
