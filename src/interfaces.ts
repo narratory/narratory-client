@@ -95,6 +95,7 @@ export type VariableMap = {
 
 export interface RichSay {
   text: string | string[]
+  ssml?: string | string[]
   cond?: ConditionMap
   suggestions?: string[]
   content?: Content
