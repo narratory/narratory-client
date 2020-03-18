@@ -14,6 +14,7 @@ export interface Agent {
   allowGateway?: boolean
   skipQueryRepeat?: boolean
   fallbackWebhook?: string
+  logWebhook?: string
 }
 
 export interface GoogleCredentials {
@@ -62,6 +63,7 @@ export type EntityMap = {
 }
 
 export interface UserTurn {
+  id?: string
   intent: string[] | Intent
   bot:
     | BotTurn
@@ -100,6 +102,7 @@ export interface RichSay {
 }
 
 export interface AbstractBotTurn {
+  id?: string
   say?: string | RichSay | Array<string | RichSay>
   repair?: boolean | "PARENT"
   label?: string
@@ -173,4 +176,17 @@ export function isSystemEntity(abstractEntity: AbstractEntity | Entity | SystemE
 
 export function turnHasWebhook(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
   return abstractTurn && (abstractTurn as DynamicBotTurn).url !== undefined
+}
+
+export interface LogTurn {
+  id: string
+  userInput: string
+  intentName: string
+  parameters: { [key: string]: any }
+  isFallback: boolean
+  isEndOfConversation: boolean
+  platform: string
+  confidence: number
+  botReplies: string[]
+  timestamp: number
 }
