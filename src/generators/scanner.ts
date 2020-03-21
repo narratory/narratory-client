@@ -25,7 +25,7 @@ async function run() {
     for (const file of files) {
         if (file.includes(".ts") && file != "user.ts") {
             try {
-                let imports = require(`${process.cwd()}/out/${file.replace(".ts", ".js")}`)
+                let imports = require(`${process.cwd()}/out/src/${file.replace(".ts", ".js")}`)
                 entityIdentifiers = entityIdentifiers.concat(getAllIntents(imports, entityIdentifiers))
             } catch (err) {
                 console.log(`Skipped file ${file} due to error. Error: ${err}`)
@@ -39,7 +39,7 @@ async function run() {
 
     let existingFile
     try {
-        existingFile = require(`${process.cwd()}/out/user.js`)
+        existingFile = require(`${process.cwd()}/out/src/user.js`)
     } catch (err) {
         if (err) {
             console.log("Couldn't find user.js file")

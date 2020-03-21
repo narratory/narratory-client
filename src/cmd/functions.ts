@@ -16,7 +16,7 @@ export const start = async () => {
   }
 }
 
-const agent: Agent = require(process.cwd() + "/out/" + process.env.npm_package_config_agent.replace(".ts", ".js"))
+const agent: Agent = require(process.cwd() + "/out/src/" + process.env.npm_package_config_agent.replace(".ts", ".js"))
 .default
 
 const flags = ["script", "record", "local", "startIndex", "dry", "version"]

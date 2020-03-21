@@ -133,7 +133,7 @@ export const getNamedIntentsFromFolder = async (path: string, intentNames?: {[ke
     if (file.isFile()) {
       if (fileName.includes(".ts")) {
         try {
-          const jsPath = "out/" + path.slice(4) + "/" + fileName.replace(".ts", ".js")
+          const jsPath = "out/src/" + path.slice(4) + "/" + fileName.replace(".ts", ".js")
           const filePath = `${process.cwd()}/${jsPath}`
 
           let _exports = require(filePath)

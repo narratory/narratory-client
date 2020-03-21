@@ -83,7 +83,7 @@ export interface Order {
 }
 
 export type ConditionMap = {
-  [key: string]: boolean | string | string[] | number | ConditionMap
+  [key: string]: boolean | string | string[] | number | ConditionMap | undefined
   NOT?: ConditionMap
   OR?: ConditionMap
   AND?: ConditionMap
