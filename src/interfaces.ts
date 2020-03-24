@@ -7,7 +7,7 @@ export interface Agent {
   narrative: Array<AbstractBotTurn | string | string[]>
   userInitiatives?: Array<UserTurn>
   defaultFallbacks?: string[]
-  bridges?: string[]
+  bridges?: string[] | BotTurn
   narratoryKey: string
   googleCredentials: GoogleCredentials
   maxMessagesPerTurn?: 1 | 2
@@ -59,7 +59,7 @@ export interface Intent {
 }
 
 export type EntityMap = {
-  [key: string]: AbstractEntity
+  [key: string]: AbstractEntity | Entity | SystemEntity
 }
 
 export interface UserTurn {
