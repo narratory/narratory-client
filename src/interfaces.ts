@@ -13,8 +13,8 @@ export interface Agent {
   maxMessagesPerTurn?: 1 | 2
   allowGateway?: boolean
   skipQueryRepeat?: boolean
-  fallbackWebhook?: string
   logWebhook?: string
+  logLevel?: "NONE" | "FALLBACKS" | "ALL"
 }
 
 export interface GoogleCredentials {
@@ -181,6 +181,7 @@ export function turnHasWebhook(abstractTurn: AbstractBotTurn | BotTurn | Dynamic
 
 export interface LogTurn {
   id: string
+  agentName: string
   userInput: string
   intentName: string
   parameters: { [key: string]: any }
