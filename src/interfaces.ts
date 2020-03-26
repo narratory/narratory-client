@@ -6,6 +6,7 @@ export interface Agent {
   language: Language
   narrative: Array<AbstractBotTurn | string | string[]>
   userInitiatives?: Array<UserTurn>
+  botInitiatives?: Array<AbstractBotTurn>
   defaultFallbacks?: string[]
   bridges?: string[] | BotTurn
   narratoryKey: string

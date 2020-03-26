@@ -49,7 +49,7 @@ export const build = async ({
       // "Please remember to enter the fulfillment url into the Dialogflow console."
       return response
     } else {
-      console.log("Something went wrong in agent creation. Message: ", response.data.message)
+      console.log("Something went wrong in agent creation.", response.data.message ? ("Message: " + response.data.message) : "No message")
       return null
     }
   } catch (error) {
