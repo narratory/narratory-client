@@ -8,7 +8,7 @@ export interface Agent {
   userInitiatives?: Array<UserTurn>
   botInitiatives?: Array<AbstractBotTurn>
   defaultFallbacks?: string[]
-  bridges?: string[] | BotTurn
+  bridges?: string[] | BotTurn[]
   narratoryKey: string
   googleCredentials: GoogleCredentials
   maxMessagesPerTurn?: 1 | 2
