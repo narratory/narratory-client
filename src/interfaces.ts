@@ -7,8 +7,8 @@ export interface Agent {
   narrative: Array<AbstractBotTurn | string | string[]>
   userInitiatives?: Array<UserTurn>
   botInitiatives?: Array<AbstractBotTurn>
-  defaultFallbacks?: string[]
   bridges?: string[] | BotTurn[]
+  defaultFallbacks?: string[]
   narratoryKey: string
   googleCredentials: GoogleCredentials
   maxMessagesPerTurn?: 1 | 2
@@ -188,8 +188,15 @@ export interface LogTurn {
   parameters: { [key: string]: any }
   isFallback: boolean
   isEndOfConversation: boolean
-  platform: string
   confidence: number
   botReplies: string[]
   timestamp: number
+}
+
+export interface LogMessage {
+  sessionId: string
+  platform: string
+  turn: LogTurn
+  lastTurn?: LogTurn
+  text: string
 }
