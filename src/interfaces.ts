@@ -111,6 +111,7 @@ export interface AbstractBotTurn {
   goto?: string
   cond?: ConditionMap
   set?: VariableMap
+  expectShortAnswer?: boolean
 }
 
 export interface BotTurn extends AbstractBotTurn {
