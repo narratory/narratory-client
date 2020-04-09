@@ -1,5 +1,5 @@
 import { Language } from "./data/languages"
-import { Content } from "./richContent"
+import { Content, Image } from "./richContent"
 
 export interface Agent {
   agentName: string
@@ -99,7 +99,7 @@ export interface RichSay {
   ssml?: string | string[]
   cond?: ConditionMap
   suggestions?: string[]
-  content?: Content
+  content?: Content | any
   //| BasicCard | Image | BrowseCarousel | MediaObject | Table | List | Carousel
 }
 
