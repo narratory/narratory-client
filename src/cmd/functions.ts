@@ -1,5 +1,6 @@
 import { Agent, build, chat, getStartTurnIndex } from "../"
 import { deploy } from "../api/deploy"
+import { validate } from "../api/validate"
 import { sleep, getNamedIntentsFromFolder } from "../helpers"
 import { DELAY_AFTER_TRAINING } from "../settings"
 const fs = require("fs")
@@ -94,4 +95,12 @@ export const runDeploy = async () => {
   }
   console.log(`Deploying agent with version ${version} [Ctrl/Cmd + C to exit]\n`)
   await deploy({ agent, version, local: process.argv.includes("--local") })
+}
+
+
+export const runValidate = async () => {
+
+  console.log(`Validating agent [Ctrl/Cmd + C to exit]\n`)
+  const intents = await getNamedIntentsFromFolder("src")
+  await validate({ agent, intents, local: process.argv.includes("--local") })
 }

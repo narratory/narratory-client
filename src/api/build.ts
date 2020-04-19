@@ -9,10 +9,10 @@ export const build = async ({
   intents,
   dry = false,
   skipSleepAfterTraining,
-  local = false
+  local = false,
 }: {
   agent: Agent
-  intents: { [key: string]: Intent },
+  intents: { [key: string]: Intent }
   dry: boolean
   skipSleepAfterTraining: boolean
   local: boolean
@@ -34,22 +34,23 @@ export const build = async ({
         agent: JSON.stringify(agent),
         intents: JSON.stringify(intents),
         dry,
-        skipSleepAfterTraining
+        skipSleepAfterTraining,
       },
       {
         headers: {
-          authorization: `Bearer ${agent.narratoryKey}`
-        }
+          authorization: `Bearer ${agent.narratoryKey}`,
+        },
       }
     )
 
     if (response.data && response.data.status == 200) {
       console.log(`Agent created and trained successfully in ${(response.data.timeElapsed / 1000).toFixed(0)} seconds`)
-      // @TODO: add check if the agent is new, and then post the fulfillment-url
-      // "Please remember to enter the fulfillment url into the Dialogflow console."
       return response
     } else {
-      console.log("Something went wrong in agent creation.", response.data.message ? ("Message: " + response.data.message) : "No message")
+      console.log(
+        "Something went wrong in agent creation.",
+        response.data.message ? "Message: " + response.data.message : "No message"
+      )
       return null
     }
   } catch (error) {

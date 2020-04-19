@@ -2,6 +2,7 @@ import axios from "axios"
 import dialogflow from "dialogflow"
 import { struct } from "pb-util"
 const fs = require("fs")
+
 import { Intent } from "./index"
 
 import { GoogleCredentials } from "./interfaces"
@@ -11,9 +12,9 @@ export const callApi = async (url: string, data: object): Promise<any> => {
     url,
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    data: JSON.stringify(data)
+    data: JSON.stringify(data),
   })
 
   return await repson.data
@@ -33,7 +34,7 @@ export function getStartTurnIndex(index: string, maxIndex: number): number {
 
 export async function listDir(dir: string) {
   try {
-    return fs.promises.readdir(dir, { withFileTypes: true })
+    return await fs.promises.readdir(dir, { withFileTypes: true })
   } catch (err) {
     if (err) {
       console.error("Error occured while reading directory!", err)
@@ -74,11 +75,11 @@ export const parseDialogflowResponse = (
   }
 
   return {
-    messages: messages.map(message => {
+    messages: messages.map((message) => {
       return {
         text: message,
         richContent: false,
-        fromUser: false
+        fromUser: false,
       }
     }),
     contexts:
@@ -86,7 +87,7 @@ export const parseDialogflowResponse = (
         ? oldContexts
         : results.outputContexts, // If we get a fallback, we want to keep contexts from before
     sessionId,
-    endOfConversation
+    endOfConversation,
   }
 }
 
@@ -95,13 +96,13 @@ let sessionClient
 export const getSessionClient = (googleCredentials: GoogleCredentials) => {
   if (!sessionClient) {
     sessionClient = new dialogflow.SessionsClient({
-      credentials: googleCredentials
+      credentials: googleCredentials,
     })
   }
   return sessionClient
 }
 
-export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function getVariableName<TResult>(name: () => TResult) {
   var m = new RegExp("return (.*);").exec(name + "")
@@ -109,12 +110,15 @@ export function getVariableName<TResult>(name: () => TResult) {
   return m[1]
 }
 
-const getIntentNames = (_exports: any): Array<any> => {
+const getIntentNames = (_exports: any) => {
   const intentNames: Array<any> = []
-  if (typeof _exports === "object") { // Should always be true
-    Object.keys(_exports).forEach(key => { // Loop over all exported variables
+  if (typeof _exports === "object") {
+    // Should always be true
+    Object.keys(_exports).forEach((key) => {
+      // Loop over all exported variables
       const exportedVariable = _exports[key]
-      if (typeof exportedVariable == "object" && "examples" in exportedVariable) { // Identify intents
+      if (typeof exportedVariable == "object" && "examples" in exportedVariable) {
+        // Identify intents
         intentNames.push([key, exportedVariable])
       }
     })
@@ -122,7 +126,7 @@ const getIntentNames = (_exports: any): Array<any> => {
   return intentNames
 }
 
-export const getNamedIntentsFromFolder = async (path: string, intentNames?: {[key: string]: Intent}) => {
+export const getNamedIntentsFromFolder = async (path: string, intentNames?: { [key: string]: Intent }) => {
   if (!intentNames) {
     intentNames = {}
   }
@@ -137,7 +141,7 @@ export const getNamedIntentsFromFolder = async (path: string, intentNames?: {[ke
           const filePath = `${process.cwd()}/${jsPath}`
 
           let _exports = require(filePath)
-          getIntentNames(_exports).forEach(intentArr => {
+          getIntentNames(_exports).forEach((intentArr) => {
             intentNames[intentArr[0]] = intentArr[1]
           })
         } catch (err) {
@@ -149,4 +153,8 @@ export const getNamedIntentsFromFolder = async (path: string, intentNames?: {[ke
     }
   }
   return intentNames
+}
+
+export const printJson = (fileName: string, data: any, directory: string = "logs") => {
+  fs.writeFileSync(process.cwd() + (directory ? `/${directory}/` : "/") + fileName, JSON.stringify(data, null, 2))
 }
