@@ -25,7 +25,7 @@ export const build = async ({
     console.log("[Running dry]\n")
   }
 
-  console.log("Creating and training agent. This could take up to 60 seconds. Hold on!")
+  console.log("Creating and training agent. This could take up to 20 seconds. Hold on!")
 
   if (!agent.language) {
     agent.language = Language.English

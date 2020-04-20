@@ -17,9 +17,7 @@ export const getAgent = (): Agent => {
         )
       }
     } catch (err) {
-      throw Error(
-        "No (or invalid) agent file name set. Please make sure you have the name of the file default-exporting your agent in package.json's config object."
-      )
+      throw err
     }
 
     const agentPath = process.cwd() + "/out/src/" + agentName.replace(".ts", ".js")

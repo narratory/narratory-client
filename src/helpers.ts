@@ -32,22 +32,12 @@ export function getStartTurnIndex(index: string, maxIndex: number): number {
   }
 }
 
-export async function listDir(dir: string) {
+export function listDir(dir: string) {
   try {
-    return await fs.promises.readdir(dir, { withFileTypes: true })
+    return fs.readdirSync(dir, { withFileTypes: true })
   } catch (err) {
     if (err) {
       console.error("Error occured while reading directory!", err)
-    }
-  }
-}
-
-export async function readFile(path: string) {
-  try {
-    return fs.promises.readFile(path)
-  } catch (err) {
-    if (err) {
-      console.error("Error occured while reading file!", err)
     }
   }
 }
@@ -126,11 +116,11 @@ const getIntentNames = (_exports: any) => {
   return intentNames
 }
 
-export const getNamedIntentsFromFolder = async (path: string, intentNames?: { [key: string]: Intent }) => {
+export const getNamedIntentsFromFolder = (path: string, intentNames?: { [key: string]: Intent }) => {
   if (!intentNames) {
     intentNames = {}
   }
-  const files = await listDir(path)
+  const files = listDir(path)
 
   for (const file of files) {
     const fileName = file.name
@@ -149,7 +139,7 @@ export const getNamedIntentsFromFolder = async (path: string, intentNames?: { [k
         }
       }
     } else {
-      await getNamedIntentsFromFolder(`${path}/${fileName}`, intentNames)
+      getNamedIntentsFromFolder(`${path}/${fileName}`, intentNames)
     }
   }
   return intentNames
