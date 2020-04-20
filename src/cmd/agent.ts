@@ -1,5 +1,40 @@
 import { Agent } from "../"
+import * as fs from "fs"
+import { compileTypescript } from "./compileTypescript"
 
-const agentPath = require(process.cwd() + "/package.json").config.agent
+let agent: Agent
 
-export const agent: Agent = require(process.cwd() + "/out/src/" + agentPath.replace(".ts", ".js")).default
+export const getAgent = (): Agent => {
+  if (agent) {
+    return agent
+  } else {
+    let agentName: String
+    try {
+      agentName = require(process.cwd() + "/package.json").config.agent
+      if (!agentName || agentName.length === 0 || !agentName.endsWith("ts")) {
+        throw Error(
+          "No (or invalid) agent file name set. Please make sure you have the name of the file default-exporting your agent in package.json's config object."
+        )
+      }
+    } catch (err) {
+      throw Error(
+        "No (or invalid) agent file name set. Please make sure you have the name of the file default-exporting your agent in package.json's config object."
+      )
+    }
+
+    const agentPath = process.cwd() + "/out/src/" + agentName.replace(".ts", ".js")
+
+    if (fs.existsSync(agentPath)) {
+      return require(agentPath).default
+    } else {
+      compileTypescript()
+      if (fs.existsSync(agentPath)) {
+        return require(agentPath).default
+      } else {
+        throw Error(
+          `Can't find ${agentName}. Please make sure you have the name of the file default-exporting your agent in package.json's config object.`
+        )
+      }
+    }
+  }
+}

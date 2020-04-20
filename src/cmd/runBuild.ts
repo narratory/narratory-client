@@ -1,6 +1,6 @@
 import { getNamedIntentsFromFolder } from "../helpers"
 import { build } from "../api/build"
-import { agent } from "./agent"
+import { getAgent } from "./agent"
 import { compileTypescript } from "./compileTypescript"
 
 // Update our agent
@@ -10,7 +10,7 @@ export const runBuild = async ({ skipSleepAfterTraining = false }: { skipSleepAf
   compileTypescript()
   const intents = await getNamedIntentsFromFolder("src")
   return await build({
-    agent,
+    agent: getAgent(),
     intents,
     skipSleepAfterTraining,
     dry: process.argv.includes("!dry"),

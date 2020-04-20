@@ -1,6 +1,6 @@
 import * as fs from "fs"
 import { getStartTurnIndex } from "../helpers"
-import { agent } from "./agent"
+import { getAgent } from "./agent"
 import { chat } from "../api/chat"
 
 export interface RunChatOptions {
@@ -37,10 +37,10 @@ export const runChat = async (data: RunChatOptions) => {
     }
   }
 
-  const _startIndex = data.startIndex ? getStartTurnIndex(data.startIndex, agent.narrative.length) : 0
+  const _startIndex = data.startIndex ? getStartTurnIndex(data.startIndex, getAgent().narrative.length) : 0
 
   chat({
-    agent,
+    agent: getAgent(),
     local: process.argv.includes("!local"),
     startIndex: _startIndex,
     script: _script,

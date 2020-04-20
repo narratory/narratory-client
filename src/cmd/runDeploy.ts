@@ -1,5 +1,5 @@
 import { deploy } from "../api/deploy"
-import { agent } from "./agent"
+import { getAgent } from "./agent"
 
 export const runDeploy = async ({ version }: { version: string }) => {
   if (!version) {
@@ -7,5 +7,5 @@ export const runDeploy = async ({ version }: { version: string }) => {
     process.exit()
   }
   console.log(`Deploying agent with version ${version} [Ctrl/Cmd + C to exit]\n`)
-  await deploy({ agent, version, local: process.argv.includes("!local") })
+  await deploy({ agent: getAgent(), version, local: process.argv.includes("!local") })
 }
