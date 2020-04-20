@@ -42,6 +42,10 @@ export async function chat({
     local
   }) // Initiate the chat with the welcome event
 
+  if (local) {
+    console.log("[Using local Narratory endpoint]\n")
+  }
+  
   if (response.sessionId) {
     console.log(`Chat started with ${agent.agentName} (session id: ${response.sessionId})\n`)
   } else {

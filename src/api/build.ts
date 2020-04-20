@@ -18,7 +18,11 @@ export const build = async ({
   local: boolean
 }) => {
   if (local) {
-    console.log("USING LOCAL CREATE SERVER")
+    console.log("[Using local Narratory endpoint]\n")
+  }
+
+  if (dry) {
+    console.log("[Running dry]\n")
   }
 
   console.log("Creating and training agent. This could take up to 60 seconds. Hold on!")

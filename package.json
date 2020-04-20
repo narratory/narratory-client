@@ -1,8 +1,11 @@
 {
   "name": "narratory",
-  "version": "0.11.5",
+  "version": "0.12.0",
   "description": "Client for creating chat and voice-apps using the Narratory service.",
   "main": "out/index.js",
+  "bin": {
+    "narratory": "bin/narratory.js"
+  },
   "scripts": {
     "prepublish": "tsc --declaration",
     "watch": "tsc --watch --declaration",
@@ -13,6 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.0",
+    "commander": "^5.0.0",
     "dialogflow": "^0.12.0",
     "pb-util": "^0.1.2",
     "uuid": "^3.3.3"
