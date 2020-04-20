@@ -156,5 +156,8 @@ export const getNamedIntentsFromFolder = async (path: string, intentNames?: { [k
 }
 
 export const printJson = (fileName: string, data: any, directory: string = "logs") => {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory)
+  }
   fs.writeFileSync(process.cwd() + (directory ? `/${directory}/` : "/") + fileName, JSON.stringify(data, null, 2))
 }
