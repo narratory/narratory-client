@@ -1,11 +1,12 @@
 import axios from "axios"
 import dialogflow from "dialogflow"
 import { struct } from "pb-util"
-const fs = require("fs")
+import * as fs from "fs"
+import * as nodePath from "path"
 
 import { Intent } from "./index"
-
 import { GoogleCredentials } from "./interfaces"
+
 
 export const callApi = async (url: string, data: object): Promise<any> => {
   const repson = await axios({
@@ -130,7 +131,7 @@ export const getNamedIntentsFromFolder = (path: string, intentNames?: { [key: st
           const jsPath = "out/src/" + path.slice(4) + "/" + fileName.replace(".ts", ".js")
           const filePath = `${process.cwd()}/${jsPath}`
 
-          let _exports = require(filePath)
+          let _exports = require(nodePath.normalize(filePath))
           getIntentNames(_exports).forEach((intentArr) => {
             intentNames[intentArr[0]] = intentArr[1]
           })

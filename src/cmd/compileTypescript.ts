@@ -2,7 +2,7 @@ import { execSync } from "child_process"
 
 export const compileTypescript = async () => {
   try {
-    execSync("tsc --pretty")
+    execSync(`tsc`)
     return Promise.resolve()
   } catch (err) {
     return Promise.reject(
