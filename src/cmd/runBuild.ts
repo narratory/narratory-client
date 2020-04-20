@@ -6,8 +6,8 @@ import { compileTypescript } from "./compileTypescript"
 // Update our agent
 
 export const runBuild = async ({ skipSleepAfterTraining = false }: { skipSleepAfterTraining?: boolean } = {}) => {
-  compileTypescript()
   console.log("Building agent [Ctrl/Cmd + C to exit]\n")  
+  compileTypescript()
   const intents = await getNamedIntentsFromFolder("src")
   return await build({
     agent,
