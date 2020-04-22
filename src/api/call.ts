@@ -2,6 +2,8 @@ import { struct } from "pb-util"
 import { isEmpty, getSessionClient, parseDialogflowResponse } from "../helpers"
 import { API_VERSION, DIALOGFLOW_RETRY_ATTEMPTS, DEFAULT_LANGUAGE } from "../settings"
 import { GoogleCredentials } from "../interfaces"
+import { NarratoryResponse } from "../internalInterfaces"
+
 import { Language } from "../data/languages"
 const v4 = require("uuid/v4")
 
@@ -12,7 +14,7 @@ export const call = async ({
   contexts,
   event,
   message,
-  local
+  local,
 }: {
   googleCredentials: GoogleCredentials
   language?: Language
@@ -21,32 +23,25 @@ export const call = async ({
   event?: string
   message?: string
   local?: boolean
-}): Promise<{
-  messages: {
-    text: string
-    fromUser: boolean
-  }[]
-  contexts: any[]
-  sessionId: string
-  endOfConversation: boolean,
-  rawResponse: any
-}> => {
+}): Promise<NarratoryResponse> => {
   let attempts = 0
   const _sessionId = sessionId ? sessionId : v4()
   const sessionClient = getSessionClient(googleCredentials)
   const sessionPath = sessionClient.sessionPath(googleCredentials.project_id, _sessionId)
   const previousContexts = contexts
+  let timestampBefore: number
+  let timestampAfter: number
 
-  let input : any = event
+  let input: any = event
     ? {
         // Input for EVENTS
         session: sessionPath,
         queryInput: {
           event: {
             name: event,
-            languageCode: language
-          }
-        }
+            languageCode: language,
+          },
+        },
       }
     : {
         // Input for MESSAGES
@@ -54,20 +49,20 @@ export const call = async ({
         queryInput: {
           text: {
             text: message,
-            languageCode: language
-          }
+            languageCode: language,
+          },
         },
         queryParams: {
-          contexts: previousContexts
-        }
+          contexts: previousContexts,
+        },
       }
 
   if (local) {
     input.queryParams = {
       ...input.queryParams,
       payload: struct.encode({
-        localDevelopment: true
-      })
+        localDevelopment: true,
+      }),
     }
   }
 
@@ -76,27 +71,29 @@ export const call = async ({
       console.log("===== Calling Dialogflow")
     }
 
+    attempts++
+    timestampBefore = Date.now()
     let responses = (await sessionClient.detectIntent(input)).filter(Boolean) // Since sometimes, the responses array seems to have two extra, "undefined" values
+    timestampAfter = Date.now()
 
     // If we get an error the first attempt, we do one retry. The nature of cloud functions is unfortunately that slow-starts might take enough time for dialogflow to neglect the webhook call
     if (responses.length == 0 || !responses[0].webhookStatus || ![0, 4].includes(responses[0].webhookStatus.code)) {
       const errorMessages = [
         "Woops! It seems like I can't connect to Narratory.",
-        "Did you remember to put in the fulfillment url",
-        "in the Dialogflow console's Fulfillment page?",
-        "The fulfillment url is https://europe-west1-narratory-1.cloudfunctions.net/fulfill_v" + API_VERSION
+        "Please check your internet connection and try again!",
       ]
       return {
-        messages: errorMessages.map(msg => {
+        messages: errorMessages.map((msg) => {
           return {
             text: msg,
-            fromUser: false
+            fromUser: false,
           }
         }),
         contexts: [],
         sessionId: undefined,
         endOfConversation: true,
-        rawResponse: responses
+        rawResponse: responses,
+        attempts,
       }
     }
 
@@ -108,7 +105,9 @@ export const call = async ({
       if (process.env.NODE_ENV == "development") {
         console.log("===== Got error, trying again")
       }
+      timestampBefore = Date.now()
       responses = await sessionClient.detectIntent(input)
+      timestampAfter = Date.now()
       results = responses[0].queryResult
     }
 
@@ -117,7 +116,9 @@ export const call = async ({
     } else {
       return {
         ...parseDialogflowResponse(results, previousContexts, _sessionId),
-        rawResponse: responses
+        responseTimeTotal: timestampAfter - timestampBefore,
+        rawResponse: responses,
+        attempts,
       }
     }
   } catch (err) {
@@ -125,13 +126,14 @@ export const call = async ({
       messages: [
         {
           text: "Woops. I had issues connecting to the server. Try again soon!",
-          fromUser: false
-        }
+          fromUser: false,
+        },
       ],
       contexts: undefined,
       sessionId: undefined,
       endOfConversation: true,
-      rawResponse: undefined
+      rawResponse: undefined,
+      attempts,
     }
   }
 }

@@ -15,7 +15,7 @@ export const runBuild = async ({ skipSleepAfterTraining = false }: { skipSleepAf
   }
 
   const intents = getNamedIntentsFromFolder("src")
-  
+    
   return await build({
     agent: getAgent(),
     intents,

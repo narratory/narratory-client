@@ -1,6 +1,6 @@
 {
   "name": "narratory",
-  "version": "0.12.7",
+  "version": "0.12.9",
   "description": "Client for creating chat and voice-apps using the Narratory service.",
   "main": "out/index.js",
   "bin": {

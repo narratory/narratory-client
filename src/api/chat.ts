@@ -1,14 +1,13 @@
 import { call } from "./call"
 import { Agent } from "../index"
-import { AbstractBotTurn } from "../interfaces"
-import Axios from "axios"
-import { CUSTOM_START_URL } from "../settings"
+import { NarratoryResponse } from "../internalInterfaces"
+import { printDebugMessage } from "../helpers"
 const fs = require("fs")
 
 const readline = require("readline").createInterface({
   input: process.stdin,
   output: process.stdout,
-  removeHistoryDuplicates: true
+  removeHistoryDuplicates: true,
 })
 
 const getMessage = (message: string, prompt: boolean) => `Bot: ${message + (prompt ? "\n>> " : "")}`
@@ -16,20 +15,23 @@ const getMessage = (message: string, prompt: boolean) => `Bot: ${message + (prom
 export async function chat({
   agent,
   local = false,
+  debug = false,
   startIndex,
   script,
-  recordFile
+  recordFile,
 }: {
-  agent: Agent,
-  local?: boolean,
+  agent: Agent
+  local?: boolean
+  debug: boolean
   startIndex?: number
   script?: string[]
   recordFile?: string
 }) {
-  const logger = recordFile ? fs.createWriteStream(recordFile, {
-      flags: "a" // 'a' means appending (old data will be preserved)
-    })
-  : null
+  const logger = recordFile
+    ? fs.createWriteStream(recordFile, {
+        flags: "a", // 'a' means appending (old data will be preserved)
+      })
+    : null
 
   const _script = !script || !Array.isArray(script) || script.length == 0 ? [] : script.filter(Boolean).reverse()
 
@@ -39,33 +41,38 @@ export async function chat({
     googleCredentials: agent.googleCredentials,
     language: agent.language,
     event: startEvent,
-    local
+    local,
   }) // Initiate the chat with the welcome event
 
   if (local) {
     console.log("[Using local Narratory endpoint]\n")
   }
-  
+
   if (response.sessionId) {
     console.log(`Chat started with ${agent.agentName} (session id: ${response.sessionId})\n`)
   } else {
     console.log(`Chat could not be started with ${agent.agentName}\n`)
   }
 
-  await handleResponseWithScript({ agent, response, local, script: _script, logger }) // And then, recursively, handle responses
+  await handleResponseWithScript({ agent, response, local, script: _script, logger, debug }) // And then, recursively, handle responses
 }
 
 export function handleResponseWithChat({
   agent,
   response,
   local,
-  logger
+  logger,
+  debug,
 }: {
   agent: Agent
   local?: boolean
   response: any
   logger: any
+  debug: boolean
 }) {
+  if (debug) {
+    printDebugMessage(response)
+  }
   response.messages.map((message, index) => {
     if (index == response.messages.length - 1) {
       // If last message, we make a prompt and then call our agent with the input
@@ -83,8 +90,8 @@ export function handleResponseWithChat({
               language: agent.language,
               googleCredentials: agent.googleCredentials,
               message: input,
-              local
-            }).then(response => handleResponseWithChat({ agent, response, local, logger }))
+              local,
+            }).then((response) => handleResponseWithChat({ agent, response, local, logger, debug }))
           } else {
             handleResponseWithChat({
               agent,
@@ -93,12 +100,13 @@ export function handleResponseWithChat({
                 messages: [
                   {
                     text: "<Input can't be empty>",
-                    fromUser: false
-                  }
-                ]
+                    fromUser: false,
+                  },
+                ],
               },
               local,
-              logger
+              logger,
+              debug,
             })
           }
         })
@@ -114,17 +122,22 @@ async function handleResponseWithScript({
   response,
   local,
   script,
-  logger
+  logger,
+  debug,
 }: {
   agent: Agent
-  response: any
+  response: NarratoryResponse
   local?: boolean
   script: string[]
   logger: any
+  debug: boolean
 }) {
   if (script.length == 0) {
-    handleResponseWithChat({ agent, response, local, logger })
+    handleResponseWithChat({ agent, response, local, logger, debug })
   } else {
+    if (debug) {
+      printDebugMessage(response)
+    }
     for (let index = 0; index < response.messages.length; index++) {
       const message = response.messages[index]
       console.log(getMessage(message.text, false))
@@ -136,8 +149,7 @@ async function handleResponseWithScript({
           process.exit()
         } else {
           const input = script.pop()
-          console.log("User: " + input)
-          
+          console.log("User: " + input + " [Automatic replay]")
           logger && logger.write(`${input}\n`)
 
           const _response = await call({
@@ -145,9 +157,9 @@ async function handleResponseWithScript({
             language: agent.language,
             googleCredentials: agent.googleCredentials,
             message: input,
-            local
+            local,
           })
-          await handleResponseWithScript({ agent, response: _response, local, script, logger })
+          await handleResponseWithScript({ agent, response: _response, local, script, logger, debug })
         }
       }
     }

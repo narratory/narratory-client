@@ -8,6 +8,7 @@ program
     .arguments('[chat inputs]')
     .option("-r, --record <fileName>", "Record dialog to file")
     .option("-p, --play <fileName>", "Replay dialog from file")
+    .option("-d, --debug", "Include debugging information")
   
   program.on("--help", function () {
     console.log("\nExamples:")
@@ -22,7 +23,8 @@ program
     await runStart({
       recordToFile: program.record,
       replayFromFile: program.play,
-      script: program.args
+      script: program.args,
+      debug: program.debug
     })
   }
 

@@ -8,6 +8,7 @@ export interface RunChatOptions {
   replayFromFile?: string
   startIndex?: string
   script?: string[]
+  debug: boolean
   local: boolean
 }
 
@@ -44,6 +45,7 @@ export const runChat = async (data: RunChatOptions) => {
     local: process.argv.includes("!local"),
     startIndex: _startIndex,
     script: _script,
+    debug: data.debug,
     recordFile: data.recordToFile,
   })
 }
