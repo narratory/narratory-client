@@ -2,15 +2,13 @@ import { call } from "./call"
 import { Agent } from "../index"
 import { NarratoryResponse } from "../internalInterfaces"
 import { printDebugMessage } from "../helpers"
-const fs = require("fs")
+import * as fs from "fs"
+import * as readline from "readline"
 
-const readline = require("readline").createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  removeHistoryDuplicates: true,
-})
+let cmdInterface: readline.Interface
 
-const getMessage = (message: string, prompt: boolean) => `Bot: ${message + (prompt ? "\n>> " : "")}`
+const getMessage = (message: string, prompt: boolean) =>
+  `Bot: ${message + (prompt ? "\n>> " : "")}`
 
 export async function chat({
   agent,
@@ -33,7 +31,10 @@ export async function chat({
       })
     : null
 
-  const _script = !script || !Array.isArray(script) || script.length == 0 ? [] : script.filter(Boolean).reverse()
+  const _script =
+    !script || !Array.isArray(script) || script.length == 0
+      ? []
+      : script.filter(Boolean).reverse()
 
   const startEvent = startIndex > 0 ? `b-${startIndex}` : "WELCOME" // Get start-event
 
@@ -49,15 +50,24 @@ export async function chat({
   }
 
   if (response.sessionId) {
-    console.log(`Chat started with ${agent.agentName} (session id: ${response.sessionId})\n`)
+    console.log(
+      `Chat started with ${agent.agentName} (session id: ${response.sessionId})\n`
+    )
   } else {
     console.log(`Chat could not be started with ${agent.agentName}\n`)
   }
 
-  await handleResponseWithScript({ agent, response, local, script: _script, logger, debug }) // And then, recursively, handle responses
+  await handleResponseWithScript({
+    agent,
+    response,
+    local,
+    script: _script,
+    logger,
+    debug,
+  }) // And then, recursively, handle responses
 }
 
-export function handleResponseWithChat({
+function handleResponseWithChat({
   agent,
   response,
   local,
@@ -70,6 +80,15 @@ export function handleResponseWithChat({
   logger: any
   debug: boolean
 }) {
+  if (!cmdInterface) {
+    cmdInterface = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      removeHistoryDuplicates: true,
+      terminal: false // To avoid duplicate key-presses
+    })
+  }
+
   if (debug) {
     printDebugMessage(response)
   }
@@ -82,34 +101,45 @@ export function handleResponseWithChat({
         logger && logger.end()
         process.exit()
       } else {
-        readline.question(getMessage(message.text, true), (input: string) => {
-          if (input !== "") {
-            logger && logger.write(`${input}\n`)
-            call({
-              ...response,
-              language: agent.language,
-              googleCredentials: agent.googleCredentials,
-              message: input,
-              local,
-            }).then((response) => handleResponseWithChat({ agent, response, local, logger, debug }))
-          } else {
-            handleResponseWithChat({
-              agent,
-              response: {
+        cmdInterface.question(
+          getMessage(message.text, true),
+          (input: string) => {
+            if (input !== "") {
+              logger && logger.write(`${input}\n`)
+              call({
                 ...response,
-                messages: [
-                  {
-                    text: "<Input can't be empty>",
-                    fromUser: false,
-                  },
-                ],
-              },
-              local,
-              logger,
-              debug,
-            })
+                language: agent.language,
+                googleCredentials: agent.googleCredentials,
+                message: input,
+                local,
+              }).then((response) =>
+                handleResponseWithChat({
+                  agent,
+                  response,
+                  local,
+                  logger,
+                  debug,
+                })
+              )
+            } else {
+              handleResponseWithChat({
+                agent,
+                response: {
+                  ...response,
+                  messages: [
+                    {
+                      text: "<Input can't be empty>",
+                      fromUser: false,
+                    },
+                  ],
+                },
+                local,
+                logger,
+                debug,
+              })
+            }
           }
-        })
+        )
       }
     } else {
       console.log(getMessage(message.text, false)) // Otherwise we just print the message
@@ -159,7 +189,14 @@ async function handleResponseWithScript({
             message: input,
             local,
           })
-          await handleResponseWithScript({ agent, response: _response, local, script, logger, debug })
+          await handleResponseWithScript({
+            agent,
+            response: _response,
+            local,
+            script,
+            logger,
+            debug,
+          })
         }
       }
     }

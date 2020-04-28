@@ -9,7 +9,6 @@ export interface RunChatOptions {
   startIndex?: string
   script?: string[]
   debug: boolean
-  local: boolean
 }
 
 export const runChat = async (data: RunChatOptions) => {

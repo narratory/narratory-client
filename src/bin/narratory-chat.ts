@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-var { runChat } = require("../out/cmd/runChat")
-var program = require("commander")
+export {}
+
+import { runChat } from "../cmd/runChat"
+import program from "commander"
 
 program
   .description("Chat with your Narratory agent.")

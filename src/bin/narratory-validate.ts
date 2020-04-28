@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-var { runValidate } = require("../out/cmd/runValidate");
-var program = require('commander');
+export {}
+
+import { runValidate } from "../cmd/runValidate"
+import program from "commander"
 
 program
     .description("Validate your Narratory agent's NLU model")

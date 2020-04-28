@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-var { runDeploy } = require("../out/cmd/runDeploy")
-var program = require("commander")
+export {}
+
+import { runDeploy } from "../cmd/runDeploy"
+import program from "commander"
 
 program.description("Deploys your Narratory agent with the given version").arguments("<version>")
 

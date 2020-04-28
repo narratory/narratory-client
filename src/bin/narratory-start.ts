@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-var { runStart } = require("../out/cmd/runStart");
-var program = require('commander');
+export {}
+
+import { runStart } from "../cmd/runStart"
+import program from "commander"
 
 program
     .description('Build and then run with your Narratory agent.')
