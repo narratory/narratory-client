@@ -28,7 +28,7 @@ async function updatePkg(pkgPath: string, obj: any): Promise<void> {
 export async function initAgent({
   rootDir,
   agentName,
-  reqTemplate,
+  reqTemplate = "starter",
 }: {
   rootDir: string
   agentName?: string
@@ -67,7 +67,7 @@ export async function initAgent({
 
   let template = reqTemplate
   // Prompt if template is not provided from CLI.
-  if (!template) {
+  if (!template && templates.length > 1) {
     const { template: promptedTemplate } = await inquirer.prompt({
       type: "list",
       name: "template",
@@ -188,7 +188,7 @@ export async function initAgent({
   console.log(`Installing dependencies with: ${chalk.cyan(pkgManager)}`)
 
   try {
-    shell.exec(`cd "${name}" && ${useYarn ? "yarn" : "npm install"}`, {
+    shell.exec(`cd "${name}" && ${useYarn ? "yarn" : "npm install && node_modules/.bin/tsc"}`, {
       silent: true,
     })
   } catch (err) {

@@ -2,6 +2,7 @@ import * as fs from "fs"
 import { getStartTurnIndex } from "../helpers"
 import { getAgent } from "./agent"
 import { chat } from "../api/chat"
+import { validateAgentCredentialsFormat } from "./helpers"
 
 export interface RunChatOptions {
   recordToFile?: string
@@ -14,11 +15,21 @@ export interface RunChatOptions {
 export const runChat = async (data: RunChatOptions) => {
   console.log("Starting chat [Ctrl/Cmd + C to exit]\n")
 
+  const agent = getAgent()
+
+  validateAgentCredentialsFormat(agent)
+
+  const _startIndex = data.startIndex
+    ? getStartTurnIndex(data.startIndex, agent.narrative.length)
+    : 0
+
   let _script: string[]
 
   if (data.replayFromFile) {
     try {
-      _script = data.replayFromFile ? fs.readFileSync(data.replayFromFile).toString().split("\n") : []
+      _script = data.replayFromFile
+        ? fs.readFileSync(data.replayFromFile).toString().split("\n")
+        : []
     } catch (err) {
       if (err) {
         console.log("Could not read script file " + data.replayFromFile)
@@ -37,14 +48,17 @@ export const runChat = async (data: RunChatOptions) => {
     }
   }
 
-  const _startIndex = data.startIndex ? getStartTurnIndex(data.startIndex, getAgent().narrative.length) : 0
-
-  chat({
-    agent: getAgent(),
-    local: process.argv.includes("!local"),
-    startIndex: _startIndex,
-    script: _script,
-    debug: data.debug,
-    recordFile: data.recordToFile,
-  })
+  try {
+    chat({
+      agent,
+      local: process.argv.includes("!local"),
+      startIndex: _startIndex,
+      script: _script,
+      debug: data.debug,
+      recordFile: data.recordToFile,
+    })
+  } catch (err) {
+    console.log("An error happened in chat. Error: ", err.message)
+    process.exit()
+  }
 }

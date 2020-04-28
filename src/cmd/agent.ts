@@ -20,7 +20,8 @@ export const getAgent = (): Agent => {
       throw err
     }
 
-    const agentPath = process.cwd() + "/out/src/" + agentName.replace(".ts", ".js")
+    const agentPath =
+      process.cwd() + "/out/src/" + agentName.replace(".ts", ".js")
 
     if (fs.existsSync(agentPath)) {
       return require(agentPath).default
