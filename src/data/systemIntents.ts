@@ -17,3 +17,5 @@ export const SILENCE: Intent = {
 }
 
 export const EXIT = "__EXIT"
+
+export const HANDOVER = "__HANDOVER"
