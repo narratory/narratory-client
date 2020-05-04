@@ -1,6 +1,6 @@
 {
   "name": "narratory",
-  "version": "0.13.2",
+  "version": "0.13.6",
   "description": "Client for creating chat and voice-apps using the Narratory service.",
   "main": "out/index.js",
   "bin": {
@@ -19,6 +19,7 @@
     "@types/inquirer": "^6.5.0",
     "@types/lodash.kebabcase": "^4.1.6",
     "@types/shelljs": "^0.8.7",
+    "@types/uuid": "^7.0.3",
     "axios": "^0.19.0",
     "chalk": "^4.0.0",
     "commander": "^5.0.0",
@@ -32,7 +33,7 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "@types/node": "^12.12.36",
+    "@types/node": "^12.12.37",
     "typescript": "^3.8.3"
   }
 }

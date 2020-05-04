@@ -4,12 +4,12 @@ import path from "path"
 export const compileTypescript = async () => {
   try {
     // Try compiling with local typescript executable
-    execSync(path.join("node_modules", ".bin", "tsc"))
+    execSync(path.join("node_modules", ".bin", "tsc"), { stdio: "ignore" })
     return Promise.resolve()
   } catch (err) {
     // Try compiling with global typescript executable
     try {
-      execSync("tsc")
+      execSync("tsc", { stdio: "ignore" })
       return Promise.resolve()
     } catch(err) {
       return Promise.reject(

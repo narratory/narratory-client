@@ -5,7 +5,7 @@ import { GoogleCredentials } from "../interfaces"
 import { NarratoryResponse } from "../internalInterfaces"
 
 import { Language } from "../data/languages"
-const v4 = require("uuid/v4")
+import v4 from "uuid/v4"
 
 export const call = async ({
   googleCredentials,
@@ -125,7 +125,7 @@ export const call = async ({
     return {
       messages: [
         {
-          text: "Woops. I had issues connecting to the server. Try again soon!",
+          text: "Woops. Something went wrong. Try again soon!",
           fromUser: false,
         },
       ],

@@ -12,7 +12,7 @@ export interface NarratoryResponse {
   narratoryIntentName?: string
   classificationConfidence?: number
   contexts: any[]
-  sessionId: string
+  sessionId?: string
   endOfConversation: boolean
   responseTimeTotal?: number
   responseTimeWebhook?: number
