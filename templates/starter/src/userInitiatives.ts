@@ -20,4 +20,4 @@ const favoriteQuestions: UserTurn[] = [
   }
 ]
 
-export default [nameQuery, ...favoriteQuestions]
+export const userInitiatives = [nameQuery, ...favoriteQuestions]

@@ -1,4 +1,4 @@
-# Start kit for building chatbots and voice-apps with Narratory
+# Empty start kit for building chatbots and voice-apps with Narratory
 
 Documentation: [narratory.io](https://narratory.io)
 Contact: [info _at narratory.io](mailto:info@narratory.io)

@@ -1,14 +1,29 @@
 import { Entity, Intent } from "narratory"
 
+export const yes: Intent = {
+  examples: ["Yes", "Indeed", "Absolutely", "we have", "I think so"]
+}
+
+export const no: Intent = {
+  examples: ["No", "I don't think so", "I have no idea", "I don't know"]
+}
+
 export const favNumber: Intent = {
-  examples: ["what is your favorite number", "what number do you like best", "what number gets you going"]
+  examples: [
+    "what is your favorite number",
+    "what number do you like best",
+    "what number gets you going"
+  ]
 }
 
 export const virtualAssistant: Entity = {
   name: "virtualAssistant",
   enums: [
     { name: "alexa", alts: ["alexa", "Amazon Alexa", "The amazon one"] },
-    { name: "google home", alts: ["google", "Google assistant", "assistant from google"] },
+    {
+      name: "google home",
+      alts: ["google", "Google assistant", "assistant from google"]
+    },
     { name: "siri" },
     { name: "Cortana", alts: ["microsoft assistant"] }
   ]
