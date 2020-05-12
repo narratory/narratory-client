@@ -67,7 +67,7 @@ export async function initAgent({
 
   let template = reqTemplate
   // Prompt if template is not provided from CLI.
-  if (!template && templates.length > 1) {
+  if (templates.length > 1) {
     const { template: promptedTemplate } = await inquirer.prompt({
       type: "list",
       name: "template",
