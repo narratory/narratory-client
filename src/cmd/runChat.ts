@@ -19,10 +19,6 @@ export const runChat = async (data: RunChatOptions) => {
 
   validateAgentCredentialsFormat(agent)
 
-  const _startIndex = data.startIndex
-    ? getStartTurnIndex(data.startIndex, agent.narrative.length)
-    : 0
-
   let _script: string[]
 
   if (data.replayFromFile) {
@@ -52,7 +48,6 @@ export const runChat = async (data: RunChatOptions) => {
     chat({
       agent,
       local: process.argv.includes("!local"),
-      startIndex: _startIndex,
       script: _script,
       debug: data.debug,
       recordFile: data.recordToFile,

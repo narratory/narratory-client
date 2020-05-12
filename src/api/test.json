@@ -1,0 +1,479 @@
+{
+  "agentName": "My customer service app",
+  "language": "en",
+  "narratives": [
+    {
+      "botInitiatives": [
+        ["Hi there", "Greetings", "Hello"],
+        "Welcome to the one-size-fits-noone T-shirt store customer service",
+        {
+          "say": [
+            {
+              "cond": { "helped": false },
+              "text": "What can I help you with?"
+            },
+            { "text": "Can I help with anything else?" }
+          ],
+          "user": [
+            {
+              "intent": {
+                "entities": {
+                  "problem": {
+                    "name": "ProblemArea",
+                    "enums": [
+                      {
+                        "name": "order",
+                        "alts": [
+                          "purchase",
+                          "item I bought",
+                          "purchased item",
+                          "ordered item"
+                        ]
+                      },
+                      { "name": "payment", "alts": ["invoice", "credit card"] }
+                    ]
+                  },
+                  "identifier": {
+                    "category": "Numbers",
+                    "name": "sys.number-sequence",
+                    "description": "Matches number sequences",
+                    "returns": "String",
+                    "default": "1 2 2003"
+                  }
+                },
+                "examples": [
+                  "I have a question about my _problem",
+                  "I have a problem with my _problem",
+                  "I have problems with my _problem",
+                  "I have problems with my _problem with id _identifier",
+                  "questions about _problem",
+                  "I wanna talk about _problem",
+                  "my _problem has a problem",
+                  "my _problem has issues",
+                  "I have issues with my _problem",
+                  "issues with my _problem",
+                  "issue with my _problem",
+                  "with my _problem",
+                  "_problem",
+                  "problem with my _problem"
+                ]
+              },
+              "bot": [
+                {
+                  "cond": { "problem": "order" },
+                  "say": "Alright",
+                  "goto": {
+                    "botInitiatives": [
+                      {
+                        "say": "So, _problem. What is the problem with your _problem_original?",
+                        "user": [
+                          {
+                            "intent": {
+                              "examples": [
+                                "wrong quantity",
+                                "I ordered the wrong amount",
+                                "I ordered the wrong quantity",
+                                "I ordered too many",
+                                "I ordered too few",
+                                "I want more",
+                                "I want less"
+                              ]
+                            },
+                            "bot": "You ordered the wrong amount of products? That happens"
+                          },
+                          {
+                            "intent": {
+                              "examples": [
+                                "I didn't receive my package",
+                                "I didn't receive my delivery",
+                                "I didn't receive my order",
+                                "I haven't received my tshirt",
+                                "I haven't received my products",
+                                "where is my tshirt",
+                                "I didnt get my order",
+                                "I haven't got my package",
+                                "where is it"
+                              ]
+                            },
+                            "bot": "You didn't receive the product? I'm sad to hear."
+                          },
+                          {
+                            "intent": {
+                              "entities": {
+                                "wrongColor": {
+                                  "category": "Other",
+                                  "name": "sys.color",
+                                  "description": "Words describing colors",
+                                  "returns": "String",
+                                  "default": "green"
+                                },
+                                "newColor": {
+                                  "category": "Other",
+                                  "name": "sys.color",
+                                  "description": "Words describing colors",
+                                  "returns": "String",
+                                  "default": "green"
+                                }
+                              },
+                              "examples": [
+                                "It is the wrong color",
+                                "I ordered the wrong color",
+                                "I want it in _newColor instead",
+                                "I don't want it in _newColor",
+                                "I do not want it in _wrongColor",
+                                "I don't like _wrongColor",
+                                "I wanna change it to _newColor"
+                              ]
+                            },
+                            "bot": "Oh, the wrong color you say? I also change my mind sometimes"
+                          },
+                          {
+                            "intent": { "examples": ["__ANYTHING"] },
+                            "bot": [
+                              {
+                                "cond": { "turnCount": 0 },
+                                "say": "I can help if you either ordered the wrong quantity, the wrong color or if you haven't received your package",
+                                "repair": true
+                              },
+                              {
+                                "cond": { "turnCount": 1 },
+                                "say": "Try saying that you ordered the wrong quantity",
+                                "repair": true
+                              },
+                              {
+                                "say": "Sorry, I seem to have issues understanding you. Please try again later",
+                                "goto": "__EXIT"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "say": [
+                          "For me to help you, I need your order number",
+                          "Can I please have your order number?"
+                        ],
+                        "user": [
+                          {
+                            "intent": { "examples": ["__ANYTHING"] },
+                            "bot": {
+                              "say": [
+                                "Now, I would help you but it goes beyond the scope of this demo! ",
+                                "Thanks! Now, I would of course try to help you but it goes beyond the scope OF this demo!"
+                              ],
+                              "set": { "helped": true }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "cond": { "problem": "payment" },
+                  "say": "Okay",
+                  "goto": {
+                    "botInitiatives": [
+                      {
+                        "say": "So, _problem. What is the issue with your _problem_original?",
+                        "user": [
+                          {
+                            "intent": {
+                              "examples": [
+                                "I can't pay my invoice in time",
+                                "I need to extend my invoice",
+                                "I need more time to pay"
+                              ]
+                            },
+                            "bot": {
+                              "say": "Oh, I can probably extend it. Could I have your invoice number please?",
+                              "user": [
+                                {
+                                  "intent": { "examples": ["__ANYTHING"] },
+                                  "bot": {
+                                    "say": [
+                                      "Now, I would help you but it goes beyond the scope of this demo! ",
+                                      "Thanks! Now, I would of course try to help you but it goes beyond the scope OF this demo!"
+                                    ],
+                                    "set": { "helped": true }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "intent": {
+                              "examples": [
+                                "wrong amount",
+                                "the wrong sum",
+                                "it charged too much",
+                                "it charged me twise",
+                                "it deducted too much"
+                              ]
+                            },
+                            "bot": {
+                              "say": "Oh, you don't say? Let me look at it. Could I have your order number please?",
+                              "user": [
+                                {
+                                  "intent": { "examples": ["__ANYTHING"] },
+                                  "bot": {
+                                    "say": [
+                                      "Now, I would help you but it goes beyond the scope of this demo! ",
+                                      "Thanks! Now, I would of course try to help you but it goes beyond the scope OF this demo!"
+                                    ],
+                                    "set": { "helped": true }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "intent": { "examples": ["__ANYTHING"] },
+                            "bot": [
+                              {
+                                "cond": { "turnCount": 0 },
+                                "say": "I can help if you either if you need to extend your payment or if it charged the wrong amount",
+                                "repair": true
+                              },
+                              {
+                                "cond": { "turnCount": 1 },
+                                "say": "Try saying that it charged the wrong amount",
+                                "repair": true
+                              },
+                              {
+                                "say": "Sorry, I seem to have issues understanding you. Please try again later",
+                                "goto": "__EXIT"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "say": [
+                          "Do you have your invoice number for me? For me to help you, I need your order number",
+                          "Can I please have your order number?"
+                        ],
+                        "user": [
+                          {
+                            "intent": { "examples": ["__ANYTHING"] },
+                            "bot": {
+                              "say": [
+                                "Now, I would help you but it goes beyond the scope of this demo! ",
+                                "Thanks! Now, I would of course try to help you but it goes beyond the scope OF this demo!"
+                              ],
+                              "set": { "helped": true }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "say": "Sorry, was that a problem with your payment or your order?",
+                  "repair": true
+                }
+              ]
+            },
+            {
+              "intent": {
+                "examples": [
+                  "Yes",
+                  "yep",
+                  "absolutely",
+                  "correct",
+                  "that is right",
+                  "right",
+                  "okay"
+                ]
+              },
+              "bot": {
+                "say": "Is that problems with your order, or maybe with your payment?",
+                "repair": true
+              }
+            },
+            {
+              "intent": {
+                "examples": ["no", "nope", "wrong", "not right", "nothing"]
+              },
+              "bot": { "say": "Okay" }
+            },
+            {
+              "intent": { "examples": ["__ANYTHING"] },
+              "bot": [
+                {
+                  "cond": { "turnCount": 0 },
+                  "say": "For now, I can only help with questions about orders or payments",
+                  "repair": true
+                },
+                {
+                  "cond": { "turnCount": 1 },
+                  "say": "Try saying that you have a problem with your order or your payment",
+                  "repair": true
+                },
+                {
+                  "say": "Sorry, I seem to have issues understanding you. Please try again later",
+                  "goto": "__EXIT"
+                }
+              ]
+            }
+          ]
+        },
+        { "say": ["Thanks for today. Goodbye!", "Thanks, goodbye!"] }
+      ],
+      "userInitiatives": [
+        {
+          "intent": {
+            "examples": [
+              "I wanna talk to a human",
+              "I need to talk to a human",
+              "stop",
+              "I'm stuck",
+              "help",
+              "this isn't working",
+              "let me talk to a live person",
+              "let me talk to a representative",
+              "I wanna talk to a person",
+              "speak with real person",
+              "talk to operator",
+              "give me a person"
+            ]
+          },
+          "bot": [
+            {
+              "cond": { "platform": "handover-demo" },
+              "say": [
+                "Absolutely, I will connect you with a human",
+                "No problem, here is a human"
+              ],
+              "goto": "__HANDOVER"
+            },
+            { "say": "I can't do this on this chat-client unfortunately" }
+          ]
+        }
+      ],
+      "bridges": ["So", "Where were we", "Now"]
+    },
+    {
+      "botInitiatives": [
+        {
+          "say": "So, _problem. What is the problem with your _problem_original?",
+          "user": [
+            {
+              "intent": {
+                "examples": [
+                  "wrong quantity",
+                  "I ordered the wrong amount",
+                  "I ordered the wrong quantity",
+                  "I ordered too many",
+                  "I ordered too few",
+                  "I want more",
+                  "I want less"
+                ]
+              },
+              "bot": "You ordered the wrong amount of products? That happens"
+            },
+            {
+              "intent": {
+                "examples": [
+                  "I didn't receive my package",
+                  "I didn't receive my delivery",
+                  "I didn't receive my order",
+                  "I haven't received my tshirt",
+                  "I haven't received my products",
+                  "where is my tshirt",
+                  "I didnt get my order",
+                  "I haven't got my package",
+                  "where is it"
+                ]
+              },
+              "bot": "You didn't receive the product? I'm sad to hear."
+            },
+            {
+              "intent": {
+                "entities": {
+                  "wrongColor": {
+                    "category": "Other",
+                    "name": "sys.color",
+                    "description": "Words describing colors",
+                    "returns": "String",
+                    "default": "green"
+                  },
+                  "newColor": {
+                    "category": "Other",
+                    "name": "sys.color",
+                    "description": "Words describing colors",
+                    "returns": "String",
+                    "default": "green"
+                  }
+                },
+                "examples": [
+                  "It is the wrong color",
+                  "I ordered the wrong color",
+                  "I want it in _newColor instead",
+                  "I don't want it in _newColor",
+                  "I do not want it in _wrongColor",
+                  "I don't like _wrongColor",
+                  "I wanna change it to _newColor"
+                ]
+              },
+              "bot": "Oh, the wrong color you say? I also change my mind sometimes"
+            },
+            {
+              "intent": { "examples": ["__ANYTHING"] },
+              "bot": [
+                {
+                  "cond": { "turnCount": 0 },
+                  "say": "I can help if you either ordered the wrong quantity, the wrong color or if you haven't received your package",
+                  "repair": true
+                },
+                {
+                  "cond": { "turnCount": 1 },
+                  "say": "Try saying that you ordered the wrong quantity",
+                  "repair": true
+                },
+                {
+                  "say": "Sorry, I seem to have issues understanding you. Please try again later",
+                  "goto": "__EXIT"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "say": [
+            "For me to help you, I need your order number",
+            "Can I please have your order number?"
+          ],
+          "user": [
+            {
+              "intent": { "examples": ["__ANYTHING"] },
+              "bot": {
+                "say": [
+                  "Now, I would help you but it goes beyond the scope of this demo! ",
+                  "Thanks! Now, I would of course try to help you but it goes beyond the scope OF this demo!"
+                ],
+                "set": { "helped": true }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "narratoryKey": "35bdeff1-094e-4074-bd05-8904cbd180a9",
+  "googleCredentials": {
+    "type": "service_account",
+    "project_id": "customerservicedemo-dvqgci",
+    "private_key_id": "e82eddc88b86bd89f3a8f83b55cde6508ba6adf1",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7YvG4/FcwFkFJ\nEJ6jUqlue67pbDduusgcOV2UrHFVRgmHVw8x3OmV86Q3oz/irbpCpAv4Z/4nUqKU\ngvc1or0KnSzUDC5WA0vD3ZoY0jiZtjNaAead9P0xKTdRl5+VdvBuliGta53EKuyG\n3s8qf+sJjadya9GO6f9uMO3dJvgWafz92rtVeKfd7fVWl5gam/CzmZ+6lhS/ospd\n7AGSQeNZTjLGmvrVbcxmcWS1fi8Ji8I3Q47Ij/GzT+5Jc6rCjuHG7Qu9xBoTIZIR\nIFYK8vky2PxVRvrR3YzjM+5mZMDNl+GVHEAcicG96T4q2ardurasbmny22PjblDE\nXlBOEOmPAgMBAAECggEAERfSo+9aHAKpBuYItS4+UrEz6zVaDcmPpR9zKAjeN7Xx\nUD1X9Kee+R+QnHCm9wxQ4BurFIhBQ0tYQELSvmZEvJn0yQz+vGLa6kLQd9t+mpWS\nXpoAyZTbnxHllWrxfYasIkejSnigG2ZXor/irDufRYT8lW/nXZQpHt9Au2Upc+XO\nYjhNxbZ6dJDXoKHd4FdRl7wqo6NHXcI0Ji/RgfluaW0ThO3lVmjh6hdwurqZal9T\nRhNJvHoU1FS5MDF5CHdFh4pUc81GqqWdwfWA7QwSlNuIP7xrZRObs1pE/J8jZqxt\nzKvtBcaTHcPnG/JdhS27SAAtcguCbO6I6UVrP/Ov2QKBgQD///FYyz7xSBNy4oFE\nQmJCQF5e6ckZ4mYDKUGzZRJuBMlAnWyax7s76yJH741UxEL7kk4lX9hwLkga6PHz\nQfoy56dvDk+d+RhfK2gtWbK8aJS4w63ADEZQss8Mgwi2c+eHNS4WrKEVGasxrj9B\nQVDBQklokfbylKct4XlQTPhJuQKBgQC7YvxyylWRtptuUE8si8zbqUbQQgi1wumx\nMxxa0WmJolXfQSavLSfOPW37FgiKouQdjLuUtnC4tRM8sC2eNgkCtl5Bt7XBNp9C\nkwSYSvKzqxgaLSwvApWJ9NRKvmCACNyPrzax4eQcfIuMcIy7b42+5hbBQ4D3m9Te\nG3+1q4LRhwKBgGrDjx/9A68U5CeRl1+kX95JghILZjdJWEoRNrleeaUwkc5E2Tpj\n+g4vLgjaOxMTFuxcRAMKSfXfF2tBo0ZUSchZHFcQnNvBOwzVyYjAU+6Hnx6/XQMv\nG1Qkfn01WLje9bxJzYLfU/68yczaYr8QQmGXB4548YiRvndABZwbvaDhAoGAIIeZ\njY/kdOw/ZVIZvID0ajmjqmmcO3l/uhxGUtnBuXvt7ljQD18GZv4xBoKXrwGCGkMh\nGTrmrJn6ofFvqeR1gfwItt3edpE16oe9J3bzVQ9hmsG2xt5q+U0AQY11EST4rRTc\nqNqvD+brDtFHDQ7bi4VD8/7094cc2AXsEKyahCcCgYEAjJpqOVjLLeFnOET8+7Gw\nFWNv1xl+YtleIpFi+Y9TjyQiJ97KK1llx41EU1ZfRHv70ded+ApG1p8NwDZCCfaR\nrjYTpnY05Qv+Ns+zQs/9jYSOhZ5I7WrspuoPBo0oXZ2Z+4SEFe4fUKpHKTVUjTJJ\n9xYr7F83EwvbBeb3w4OisIU=\n-----END PRIVATE KEY-----\n",
+    "client_email": "narratory@customerservicedemo-dvqgci.iam.gserviceaccount.com",
+    "client_id": "114231280534837180453",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/narratory%40customerservicedemo-dvqgci.iam.gserviceaccount.com"
+  },
+  "logWebhook": "https://hooks.slack.com/services/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",
+  "logLevel": "FALLBACKS"
+}

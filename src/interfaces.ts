@@ -1,21 +1,30 @@
 import { Language } from "./data/languages"
 import { Content, Image } from "./richContent"
+import { EXIT, HANDOVER } from "./data/systemIntents"
 
 export interface Agent {
   agentName: string
   language: Language
-  narrative: Array<AbstractBotTurn | string | string[]>
-  userInitiatives?: Array<UserTurn>
-  botInitiatives?: Array<AbstractBotTurn>
-  bridges?: string[] | BotTurn[]
-  defaultFallbacks?: string[]
+  narratives: Narrative[]
+  //userInitiatives?: Array<UserTurn>
+  //botInitiatives?: Array<AbstractBotTurn>
+  //bridges?: string[] | BotTurn[]
+  //defaultFallbacks?: string[]
   narratoryKey: string
   googleCredentials: GoogleCredentials
   maxMessagesPerTurn?: 1 | 2
   allowGateway?: boolean
-  skipQueryRepeat?: boolean
   logWebhook?: string
   logLevel?: "NONE" | "FALLBACKS" | "ALL"
+}
+
+export interface Narrative {
+  label: string
+  botInitiatives: Array<AbstractBotTurn | string[] | string>
+  userInitiatives?: UserTurn[]
+  bridges?: string[] | BotTurn[]
+  defaultFallbacks?: string[]
+  skipQueryRepeat?: boolean
 }
 
 export interface GoogleCredentials {
@@ -72,7 +81,7 @@ export interface UserTurn {
     | OrderTurn
     | BridgeTurn
     | string
-    | Array<BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | string>
+    | Array<BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn | AbstractBotTurn | string>
 }
 
 export interface Order {

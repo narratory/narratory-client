@@ -14,14 +14,12 @@ export async function chat({
   agent,
   local = false,
   debug = false,
-  startIndex,
   script,
   recordFile,
 }: {
   agent: Agent
   local?: boolean
   debug: boolean
-  startIndex?: number
   script?: string[]
   recordFile?: string
 }) {
@@ -36,7 +34,7 @@ export async function chat({
       ? []
       : script.filter(Boolean).reverse()
 
-  const startEvent = startIndex > 0 ? `b-${startIndex}` : "WELCOME" // Get start-event
+  const startEvent = "WELCOME"
 
   const response = await call({
     googleCredentials: agent.googleCredentials,

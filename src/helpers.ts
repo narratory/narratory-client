@@ -143,7 +143,7 @@ export const getNamedIntentsFromFolder = (
   for (const file of files) {
     const fileName = file.name
     if (file.isFile()) {
-      if (fileName.includes(".ts")) {
+      if (fileName.includes("nlu.ts")) {
         try {
           const jsPath =
             "out/src/" + path.slice(4) + "/" + fileName.replace(".ts", ".js")
