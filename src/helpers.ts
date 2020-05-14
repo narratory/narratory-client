@@ -61,7 +61,6 @@ export const parseDialogflowResponse = (
       results.webhookPayload
     ) as unknown) as WebhookPayload
   } catch (err) {
-    console.log("=== Error: Failed to parse webhookPayload")
     webhookPayload = {
       endOfConversation: false,
       narratoryIntentName: "Unknown",

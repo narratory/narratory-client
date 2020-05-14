@@ -1,5 +1,6 @@
 import { getNamedIntentsFromFolder } from "../helpers"
 import { build } from "../api/build"
+import { checkAlive } from "../api/aliveCheck"
 import { getAgent } from "./agent"
 import { compileTypescript } from "./compileTypescript"
 import { validateAgentCredentialsFormat } from "./helpers"
@@ -23,11 +24,17 @@ export const runBuild = async ({
 
   const intents = getNamedIntentsFromFolder("src")
 
-  return await build({
+  const local = process.argv.includes("!local")
+
+  const response = await build({
     agent,
     intents,
     skipSleepAfterTraining,
     dry: process.argv.includes("!dry"),
-    local: process.argv.includes("!local"),
+    local,
   })
+
+  await checkAlive({ agent, local })
+
+  return response
 }
