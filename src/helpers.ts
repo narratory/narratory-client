@@ -7,6 +7,7 @@ import * as nodePath from "path"
 import { Intent } from "./index"
 import { GoogleCredentials } from "./interfaces"
 import { WebhookPayload, NarratoryResponse } from "./internalInterfaces"
+import chalk from "chalk"
 
 export const callApi = async (url: string, data: object): Promise<any> => {
   const repson = await axios({
@@ -179,10 +180,12 @@ export const printJson = (
 
 export const printDebugMessage = (response: NarratoryResponse) => {
   console.log(
-    `<Debug> Intent: ${response.narratoryIntentName} [Conf: ${
-      response.classificationConfidence
-    }], Response time: ${response.responseTimeTotal}ms [DF: ${
-      response.responseTimeTotal - response.responseTimeWebhook
-    }ms, N: ${response.responseTimeWebhook}]</debug>`
+    chalk.yellow(
+      `Debug - Intent: ${response.narratoryIntentName} [Conf: ${
+        response.classificationConfidence
+      }], Response time: ${response.responseTimeTotal}ms [DF: ${
+        response.responseTimeTotal - response.responseTimeWebhook
+      }ms, N: ${response.responseTimeWebhook}ms]`
+    )
   )
 }

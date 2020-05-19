@@ -59,6 +59,6 @@ export const build = async ({
     }
   } catch (error) {
     console.log("Something went wrong in agent creation. Error message: ", error.message)
-    return null
+    process.exit()    
   }
 }
