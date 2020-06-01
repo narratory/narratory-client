@@ -57,6 +57,7 @@ export interface Intent {
   examples: string[]
   priority?: number
   noEntityReset?: boolean
+  autoAnnotateEntities?: boolean
 }
 
 export type EntityMap = {
