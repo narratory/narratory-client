@@ -4,11 +4,12 @@ import { NarratoryResponse } from "../internalInterfaces"
 import { printDebugMessage } from "../helpers"
 import * as fs from "fs"
 import * as readline from "readline"
+import chalk from "chalk"
 
 let cmdInterface: readline.Interface
 
 const getMessage = (message: string, prompt: boolean) =>
-  `Bot: ${message + (prompt ? "\n>> " : "")}`
+  `${chalk.cyan("Bot:")} ${chalk.white(message) + (prompt ? "\n>> " : "")}`
 
 export async function chat({
   agent,

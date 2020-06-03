@@ -119,10 +119,10 @@ export const build = async ({
         "Something went wrong in agent creation.",
         response.data.message ? "Message: " + response.data.message : "No message"
       )
-      return null
+      process.exit()
     }
   } catch (error) {
     console.log("Something went wrong in agent creation. Error message: ", error.message)
-    return null
+    process.exit()    
   }
 }

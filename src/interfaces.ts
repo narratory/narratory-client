@@ -46,11 +46,19 @@ export interface AbstractEntity {
 
 export interface Entity extends AbstractEntity {
   enums: Enum[]
+  fuzzyMatching?: boolean
 }
 
 export interface DynamicEntity extends Entity {
   url: string
   type: "BUILD" | "SESSION" | "TURN"
+}
+
+export interface CompositeEntity extends AbstractEntity {
+  entities: EntityMap,
+  fuzzyMatching?: boolean
+  examples: string[]
+  outputFormat?: string
 }
 
 export interface SystemEntity extends AbstractEntity {
@@ -66,10 +74,11 @@ export interface Intent {
   examples: string[]
   priority?: number
   noEntityReset?: boolean
+  autoAnnotateEntities?: boolean
 }
 
 export type EntityMap = {
-  [key: string]: AbstractEntity | Entity | SystemEntity
+  [key: string]: AbstractEntity | Entity | CompositeEntity | SystemEntity
 }
 
 export interface UserTurn {
@@ -182,8 +191,12 @@ export function isDynamicEntity(abstractEntity: AbstractEntity | Entity | Dynami
   return abstractEntity && (abstractEntity as DynamicEntity).url !== undefined
 }
 
-export function isSystemEntity(abstractEntity: AbstractEntity | Entity | SystemEntity) {
-  return abstractEntity && (abstractEntity as Entity).enums === undefined
+export function isSystemEntity(abstractEntity: AbstractEntity) {
+  return abstractEntity && (abstractEntity as Entity).enums === undefined && !isCompositeEntity(abstractEntity)
+}
+
+export function isCompositeEntity(abstractEntity: AbstractEntity) {
+  return abstractEntity && (abstractEntity as CompositeEntity).entities !== undefined
 }
 
 export function turnHasWebhook(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
