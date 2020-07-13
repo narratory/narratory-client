@@ -73,8 +73,10 @@ export const parseDialogflowResponse = (
     messages: messages.map((message) => {
       return {
         text: message,
-        richContent: false,
+        richContent: !!message.content,
         fromUser: false,
+        suggestions: message.suggestions,
+        content: message.content
       }
     }),
     contexts:

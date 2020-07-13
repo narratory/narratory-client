@@ -8,6 +8,9 @@ export interface NarratoryResponse {
   messages: {
     text: string
     fromUser: boolean
+    richContent: boolean
+    content?: any
+    suggestions?: string[]
   }[]
   narratoryIntentName?: string
   classificationConfidence?: number

@@ -24,7 +24,7 @@ export const call = async ({
   event?: string
   message?: string
   local?: boolean
-  payload: any
+  payload?: any
 }): Promise<NarratoryResponse> => {
   let attempts = 0
   const _sessionId = sessionId ? sessionId : v4()
@@ -90,6 +90,7 @@ export const call = async ({
           return {
             text: msg,
             fromUser: false,
+            richContent: false
           }
         }),
         contexts: [],
@@ -129,6 +130,7 @@ export const call = async ({
       messages: [
         {
           text: "Woops. Something went wrong. Try again soon!",
+          richContent: false,
           fromUser: false,
         },
       ],
