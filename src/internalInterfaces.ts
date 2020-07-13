@@ -1,7 +1,12 @@
+import { RichSay } from "./interfaces"
+
 export interface WebhookPayload {
   endOfConversation: boolean
   narratoryIntentName: string
   classificationConfidence: number
+  richMessages: RichSay[]
+  richContent: boolean
+  handover: boolean
 }
 
 export interface NarratoryResponse {
