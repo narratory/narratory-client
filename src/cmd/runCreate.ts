@@ -244,6 +244,6 @@ export async function initAgent({
   }
   console.log()
   console.log(
-    "Happy hacking! Email us at info@narratory.io if you get stuck somewhere"
+    "Happy building! Feel free to reach out in our communities on either Slack or Facebook if you get stuck somewhere. You can also send an e-mail to support@narratory.io if you want to speak directly to someone from the Narratory-team."
   )
 }
