@@ -1,5 +1,5 @@
 import { Language } from "./data/languages"
-import { Content, Image } from "./richContent"
+import { Content } from "./richContent"
 
 export interface Agent {
   agentName: string

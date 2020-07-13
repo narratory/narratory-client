@@ -244,6 +244,6 @@ export async function initAgent({
   }
   console.log()
   console.log(
-    "Happy hacking! Email us at info@narratory.io if you get stuck somewhere"
+    "Happy hacking! Email us at support@narratory.io if you get stuck somewhere"
   )
 }

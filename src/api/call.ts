@@ -15,6 +15,7 @@ export const call = async ({
   event,
   message,
   local,
+  payload
 }: {
   googleCredentials: GoogleCredentials
   language?: Language
@@ -23,6 +24,7 @@ export const call = async ({
   event?: string
   message?: string
   local?: boolean
+  payload: any
 }): Promise<NarratoryResponse> => {
   let attempts = 0
   const _sessionId = sessionId ? sessionId : v4()
@@ -62,6 +64,7 @@ export const call = async ({
       ...input.queryParams,
       payload: struct.encode({
         localDevelopment: true,
+        ...payload
       }),
     }
   }

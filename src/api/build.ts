@@ -30,7 +30,7 @@ export const build = async ({
   if (!agent.language) {
     agent.language = Language.English
   }
-
+  
   try {
     const response = await axios.post(
       local ? CREATE_AGENT_URL_LOCAL : CREATE_AGENT_URL,
