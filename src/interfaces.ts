@@ -112,10 +112,16 @@ export interface RichSay {
   //| BasicCard | Image | BrowseCarousel | MediaObject | Table | List | Carousel
 }
 
+export interface RepairObject {
+  repair: boolean
+  parent: boolean
+  repeat: boolean
+}
+
 export interface AbstractBotTurn {
   id?: string
   say?: string | RichSay | Array<string | RichSay>
-  repair?: boolean | "PARENT"
+  repair?: boolean | "PARENT" | RepairObject
   label?: string
   goto?: string
   cond?: ConditionMap
