@@ -32,6 +32,7 @@ export interface Enum {
 }
 
 export interface AbstractEntity {
+  id?: string
   name: string
   default?: string
 }
