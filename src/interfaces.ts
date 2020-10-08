@@ -3,7 +3,7 @@ import { Content } from "./richContent"
 
 export interface Agent {
   agentName: string
-  builderId: string
+  builderId?: string
   language: Language
   narrative: Array<AbstractBotTurn | string | string[]>
   userInitiatives?: Array<UserTurn>
