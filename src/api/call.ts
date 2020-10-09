@@ -98,6 +98,7 @@ export const call = async ({
         endOfConversation: true,
         rawResponse: responses,
         attempts,
+        handover: false
       }
     }
 
@@ -139,6 +140,7 @@ export const call = async ({
       endOfConversation: true,
       rawResponse: undefined,
       attempts,
+      handover: false
     }
   }
 }

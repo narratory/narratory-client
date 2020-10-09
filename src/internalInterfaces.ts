@@ -26,4 +26,5 @@ export interface NarratoryResponse {
   responseTimeWebhook?: number
   attempts: number
   rawResponse: any
+  handover: boolean
 }

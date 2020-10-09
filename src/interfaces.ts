@@ -204,21 +204,37 @@ export function turnHasWebhook(abstractTurn: AbstractBotTurn | BotTurn | Dynamic
 
 export interface LogTurn {
   id: string
-  agentName: string
-  userInput: string
-  intentName: string
-  parameters: { [key: string]: any }
-  isFallback: boolean
+  message: RichSay
+  nlu: {
+    intentName?: string
+    parameters: { [key: string]: any }
+    isFallback: boolean
+    confidence: number
+  }
+  sender: "USER" | "BOT" | "OPERATOR"
+  receiver: "USER" | "BOT" | "OPERATOR"
+  handoverTo: "BOT" | "OPERATOR" | null
   isEndOfConversation: boolean
-  confidence: number
-  botReplies: string[]
   timestamp: number
 }
 
-export interface LogMessage {
-  sessionId: string
+export interface Log {
+  projectId: string
+  builderId: string
   platform: string
-  turn: LogTurn
-  lastTurn?: LogTurn
-  text: string
+  sessionId: string
+  turns: LogTurn[]
+  fallbackCount: number
+  fallbackStreak: number
+  updatedAt: number
+  createdAt: number
+  servedBy: "BOT" | "OPERATOR"
+  operatorId?: string // Uuid of user
+  active: boolean
 }
+
+// Status: figuring out the data model above. Should then be possible to add to the Gateway (maybe it should be renamed broker) to "broker" the users messages to either the bot or not. If not, the frontend will subscribe to all Logs with active=true and servedBy=operator
+
+// When sending new messages, they will be published as new entries in the log. 
+
+// The client will need to subscribe to these messages somehow.. 
