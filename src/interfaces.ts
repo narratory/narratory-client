@@ -46,7 +46,7 @@ export interface DynamicEntity extends Entity {
 }
 
 export interface CompositeEntity extends AbstractEntity {
-  entities: EntityMap,
+  entities: EntityMap
   fuzzyMatching?: boolean
   examples: string[]
   outputFormat?: string
@@ -93,14 +93,26 @@ export interface Order {
 }
 
 export type ConditionMap = {
-  [key: string]: boolean | string | string[] | number | ConditionMap | undefined
-  NOT?: ConditionMap
-  OR?: ConditionMap
-  AND?: ConditionMap
+  [key: string]:
+    | boolean
+    | string
+    | string[]
+    | number
+    | ConditionMap
+    | ConditionMap[]
+    | undefined
+  NOT?: ConditionMap | ConditionMap[]
+  OR?: ConditionMap | ConditionMap[]
+  AND?: ConditionMap | ConditionMap[]
 }
 
 export type VariableMap = {
-  [key: string]: string | boolean | number | object | Array<string | boolean | number | object>
+  [key: string]:
+    | string
+    | boolean
+    | number
+    | object
+    | Array<string | boolean | number | object>
 }
 
 export interface RichSay {
@@ -160,7 +172,16 @@ export interface WebhookResponse {
 }
 
 export interface OrderTurn extends AbstractBotTurn {
-  orderType: "BOOK" | "RESERVE" | "BUY" | "PLACE_ORDER" | "PAY" | "SEND" | "RESERVE" | "SCHEDULE" | "SUBSCRIBE"
+  orderType:
+    | "BOOK"
+    | "RESERVE"
+    | "BUY"
+    | "PLACE_ORDER"
+    | "PAY"
+    | "SEND"
+    | "RESERVE"
+    | "SCHEDULE"
+    | "SUBSCRIBE"
   name: string
   description: string
   imageUrl?: string
@@ -170,33 +191,71 @@ export interface OrderTurn extends AbstractBotTurn {
   onCancelled: BotTurn | DynamicBotTurn
 }
 
-export function isOrderBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
+export function isOrderBotTurn(
+  abstractTurn:
+    | AbstractBotTurn
+    | BotTurn
+    | DynamicBotTurn
+    | OrderTurn
+    | BridgeTurn
+) {
   return abstractTurn && (abstractTurn as OrderTurn).onConfirmed !== undefined
 }
 
-export function isDynamicBotTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
+export function isDynamicBotTurn(
+  abstractTurn:
+    | AbstractBotTurn
+    | BotTurn
+    | DynamicBotTurn
+    | OrderTurn
+    | BridgeTurn
+) {
   return (
-    abstractTurn && (abstractTurn as DynamicBotTurn).url !== undefined && (abstractTurn as BridgeTurn).bot === undefined
+    abstractTurn &&
+    (abstractTurn as DynamicBotTurn).url !== undefined &&
+    (abstractTurn as BridgeTurn).bot === undefined
   )
 }
 
-export function isBridgeTurn(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
+export function isBridgeTurn(
+  abstractTurn:
+    | AbstractBotTurn
+    | BotTurn
+    | DynamicBotTurn
+    | OrderTurn
+    | BridgeTurn
+) {
   return abstractTurn && (abstractTurn as BridgeTurn).bot !== undefined
 }
 
-export function isDynamicEntity(abstractEntity: AbstractEntity | Entity | DynamicEntity) {
+export function isDynamicEntity(
+  abstractEntity: AbstractEntity | Entity | DynamicEntity
+) {
   return abstractEntity && (abstractEntity as DynamicEntity).url !== undefined
 }
 
 export function isSystemEntity(abstractEntity: AbstractEntity) {
-  return abstractEntity && (abstractEntity as Entity).enums === undefined && !isCompositeEntity(abstractEntity)
+  return (
+    abstractEntity &&
+    (abstractEntity as Entity).enums === undefined &&
+    !isCompositeEntity(abstractEntity)
+  )
 }
 
 export function isCompositeEntity(abstractEntity: AbstractEntity) {
-  return abstractEntity && (abstractEntity as CompositeEntity).entities !== undefined
+  return (
+    abstractEntity && (abstractEntity as CompositeEntity).entities !== undefined
+  )
 }
 
-export function turnHasWebhook(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
+export function turnHasWebhook(
+  abstractTurn:
+    | AbstractBotTurn
+    | BotTurn
+    | DynamicBotTurn
+    | OrderTurn
+    | BridgeTurn
+) {
   return abstractTurn && (abstractTurn as DynamicBotTurn).url !== undefined
 }
 

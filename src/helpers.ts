@@ -66,20 +66,27 @@ export const parseDialogflowResponse = (
       narratoryIntentName: "Unknown",
       classificationConfidence: 0,
       richMessages: [],
-      handover: false
+      handover: false,
     }
-  }  
-  
+  }
+
   return {
-    messages: webhookPayload.richMessages.map((richMessage) => {
-      return {
-        text: Array.isArray(richMessage.text) ? richMessage.text[0] : richMessage.text,
-        richContent: !!richMessage.content,
-        fromUser: false,
-        suggestions: richMessage.suggestions,
-        content: richMessage.content
-      }
-    }),
+    messages: webhookPayload.richMessages
+      .filter(
+        (richMessage) =>
+          richMessage.content || richMessage.text || richMessage.ssml // Hide empty messages
+      )
+      .map((richMessage) => {
+        return {
+          text: Array.isArray(richMessage.text)
+            ? richMessage.text[0]
+            : richMessage.text,
+          richContent: !!richMessage.content,
+          fromUser: false,
+          suggestions: richMessage.suggestions,
+          content: richMessage.content,
+        }
+      }),
     contexts:
       results.intent &&
       results.intent.isFallback &&
