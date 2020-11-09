@@ -54,6 +54,11 @@ export interface CompositeEntity extends AbstractEntity {
   outputFormat?: string
 }
 
+export interface RegExpEntity extends AbstractEntity {
+  patterns: [string, ...string[]]
+  examples: [string, ...string[]]
+}
+
 export interface SystemEntity extends AbstractEntity {
   category: string
   description: string
@@ -71,7 +76,7 @@ export interface Intent {
 }
 
 export type EntityMap = {
-  [key: string]: AbstractEntity | Entity | CompositeEntity | SystemEntity
+  [key: string]: AbstractEntity | Entity | CompositeEntity | SystemEntity | RegExpEntity
 }
 
 export interface UserTurn {
@@ -191,11 +196,17 @@ export function isDynamicEntity(abstractEntity: AbstractEntity | Entity | Dynami
 }
 
 export function isSystemEntity(abstractEntity: AbstractEntity) {
-  return abstractEntity && (abstractEntity as Entity).enums === undefined && !isCompositeEntity(abstractEntity)
+  return abstractEntity && (abstractEntity as Entity).enums === undefined &&
+      !isCompositeEntity(abstractEntity) &&
+      !isRegExpEntity(abstractEntity)
 }
 
 export function isCompositeEntity(abstractEntity: AbstractEntity) {
   return abstractEntity && (abstractEntity as CompositeEntity).entities !== undefined
+}
+
+export function isRegExpEntity(abstractEntity: AbstractEntity) {
+  return abstractEntity && (abstractEntity as RegExpEntity).patterns !== undefined
 }
 
 export function turnHasWebhook(abstractTurn: AbstractBotTurn | BotTurn | DynamicBotTurn | OrderTurn | BridgeTurn) {
