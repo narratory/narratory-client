@@ -53,8 +53,6 @@ export const parseDialogflowResponse = (
   oldContexts: any[],
   sessionId: string
 ) => {
-  const messages = results.fulfillmentMessages[0].text.text
-
   let webhookPayload: WebhookPayload
 
   try {
@@ -63,18 +61,23 @@ export const parseDialogflowResponse = (
     ) as unknown) as WebhookPayload
   } catch (err) {
     webhookPayload = {
+      richContent: false,
       endOfConversation: false,
       narratoryIntentName: "Unknown",
       classificationConfidence: 0,
+      richMessages: [],
+      handover: false
     }
-  }
-
+  }  
+  
   return {
-    messages: messages.map((message) => {
+    messages: webhookPayload.richMessages.map((richMessage) => {
       return {
-        text: message,
-        richContent: false,
+        text: Array.isArray(richMessage.text) ? richMessage.text[0] : richMessage.text,
+        richContent: !!richMessage.content,
         fromUser: false,
+        suggestions: richMessage.suggestions,
+        content: richMessage.content
       }
     }),
     contexts:

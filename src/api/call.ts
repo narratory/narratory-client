@@ -15,6 +15,7 @@ export const call = async ({
   event,
   message,
   local,
+  payload
 }: {
   googleCredentials: GoogleCredentials
   language?: Language
@@ -23,6 +24,7 @@ export const call = async ({
   event?: string
   message?: string
   local?: boolean
+  payload?: any
 }): Promise<NarratoryResponse> => {
   let attempts = 0
   const _sessionId = sessionId ? sessionId : v4()
@@ -62,6 +64,7 @@ export const call = async ({
       ...input.queryParams,
       payload: struct.encode({
         localDevelopment: true,
+        ...payload
       }),
     }
   }
@@ -87,6 +90,7 @@ export const call = async ({
           return {
             text: msg,
             fromUser: false,
+            richContent: false
           }
         }),
         contexts: [],
@@ -94,6 +98,7 @@ export const call = async ({
         endOfConversation: true,
         rawResponse: responses,
         attempts,
+        handover: false
       }
     }
 
@@ -126,6 +131,7 @@ export const call = async ({
       messages: [
         {
           text: "Woops. Something went wrong. Try again soon!",
+          richContent: false,
           fromUser: false,
         },
       ],
@@ -134,6 +140,7 @@ export const call = async ({
       endOfConversation: true,
       rawResponse: undefined,
       attempts,
+      handover: false
     }
   }
 }
