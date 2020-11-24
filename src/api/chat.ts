@@ -1,6 +1,5 @@
 import { call } from "./call"
-import { Agent, DEFAULT_LANGUAGE, DEFAULT_REGION } from "narratory-lib"
-import { NarratoryResponse } from "../interfaces"
+import { Agent, DEFAULT_LANGUAGE, DEFAULT_REGION, NarratoryResponse } from "narratory-lib"
 import { printDebugMessage } from "../helpers"
 import * as fs from "fs"
 import * as readline from "readline"

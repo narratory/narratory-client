@@ -1,6 +1,6 @@
 {
   "name": "narratory",
-  "version": "0.14.2",
+  "version": "0.14.3",
   "description": "Command line client for creating chat and voice-apps using the Narratory service.",
   "main": "out/index.js",
   "bin": {

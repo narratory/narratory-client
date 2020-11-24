@@ -1,8 +1,7 @@
 import { struct } from "pb-util"
 import { isEmpty, getSessionClient, parseDialogflowResponse } from "../helpers"
 import { API_VERSION, DIALOGFLOW_RETRY_ATTEMPTS } from "../settings"
-import { DEFAULT_LANGUAGE, DialogflowRegion, GoogleCredentials, Language } from "narratory-lib"
-import { NarratoryResponse } from "../interfaces"
+import { DEFAULT_LANGUAGE, DialogflowRegion, GoogleCredentials, Language, NarratoryResponse } from "narratory-lib"
 
 import v4 from "uuid/v4"
 

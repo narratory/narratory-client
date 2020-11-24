@@ -4,8 +4,7 @@ import { struct } from "pb-util"
 const fs = require("fs")
 import * as nodePath from "path"
 
-import { Intent, GoogleCredentials } from "narratory-lib"
-import { WebhookPayload, NarratoryResponse } from "./interfaces"
+import { Intent, GoogleCredentials, WebhookPayload, NarratoryResponse } from "narratory-lib"
 import chalk from "chalk"
 
 export const callApi = async (url: string, data: object): Promise<any> => {
