@@ -1,4 +1,4 @@
-import { Agent } from "../"
+import { Agent } from "narratory-lib"
 import * as fs from "fs"
 import { compileTypescript } from "./compileTypescript"
 

@@ -1,12 +1,11 @@
 import axios from "axios"
-import dialogflow from "dialogflow"
+import { v2beta1 as dialogflow } from "@google-cloud/dialogflow"
 import { struct } from "pb-util"
 const fs = require("fs")
 import * as nodePath from "path"
 
-import { Intent } from "./index"
-import { GoogleCredentials } from "./interfaces"
-import { WebhookPayload, NarratoryResponse } from "./internalInterfaces"
+import { Intent, GoogleCredentials } from "narratory-lib"
+import { WebhookPayload, NarratoryResponse } from "./interfaces"
 import chalk from "chalk"
 
 export const callApi = async (url: string, data: object): Promise<any> => {
@@ -66,18 +65,20 @@ export const parseDialogflowResponse = (
       narratoryIntentName: "Unknown",
       classificationConfidence: 0,
       richMessages: [],
-      handover: false
+      handover: false,
     }
-  }  
-  
+  }
+
   return {
     messages: webhookPayload.richMessages.map((richMessage) => {
       return {
-        text: Array.isArray(richMessage.text) ? richMessage.text[0] : richMessage.text,
+        text: Array.isArray(richMessage.text)
+          ? richMessage.text[0]
+          : richMessage.text,
         richContent: !!richMessage.content,
         fromUser: false,
         suggestions: richMessage.suggestions,
-        content: richMessage.content
+        content: richMessage.content,
       }
     }),
     contexts:
@@ -93,7 +94,7 @@ export const parseDialogflowResponse = (
   }
 }
 
-let sessionClient
+let sessionClient : dialogflow.SessionsClient
 
 export const getSessionClient = (googleCredentials: GoogleCredentials) => {
   if (!sessionClient) {

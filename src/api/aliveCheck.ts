@@ -1,6 +1,6 @@
 import { call } from "./call"
-import { Agent } from "../index"
-import { NarratoryResponse } from "../internalInterfaces"
+import { Agent, DEFAULT_REGION } from "narratory-lib"
+import { NarratoryResponse } from "../interfaces"
 import { printDebugMessage, sleep } from "../helpers"
 import { v4 } from "uuid"
 
@@ -28,6 +28,7 @@ export async function checkAlive({
     response = await call({
       googleCredentials: agent.googleCredentials,
       language: agent.language,
+      region: agent.region ? agent.region : DEFAULT_REGION,
       message: "alive check",
       local,
       contexts: [

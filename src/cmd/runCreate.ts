@@ -6,7 +6,7 @@ import path from "path"
 import shell from "shelljs"
 import kebabCase from "lodash.kebabcase"
 import replace from "replace-in-file"
-import { Language } from "../data/languages"
+import { Language } from "narratory-lib"
 
 function hasYarn(): boolean {
   try {

@@ -1,8 +1,6 @@
-import { Agent } from "../index"
-import axios from "axios"
+import { Agent, Intent, DEFAULT_REGION, DEFAULT_LANGUAGE } from "narratory-lib"
 import { CREATE_AGENT_URL, CREATE_AGENT_URL_LOCAL } from "../settings"
-import { Language } from "../data/languages"
-import { Intent } from "../index"
+import axios from "axios"
 
 export const build = async ({
   agent,
@@ -28,7 +26,11 @@ export const build = async ({
   console.log("Creating and training agent. This could take up to 20 seconds. Hold on!")
 
   if (!agent.language) {
-    agent.language = Language.English
+    agent.language = DEFAULT_LANGUAGE
+  }
+
+  if (!agent.region) {
+    agent.region = DEFAULT_REGION
   }
   
   try {

@@ -1,4 +1,4 @@
-import { Agent, Intent } from "../"
+import { Agent, Intent } from "narratory-lib"
 import { VALIDATE_AGENT_URL, VALIDATE_AGENT_URL_LOCAL } from "../settings"
 import { printJson } from "../helpers"
 import Axios from "axios"

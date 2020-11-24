@@ -19,7 +19,7 @@ export const runBuild = async ({
   }
 
   const agent = getAgent()
-
+  
   validateAgentCredentialsFormat(agent)
 
   const intents = getNamedIntentsFromFolder("src")

@@ -1,6 +1,6 @@
 import { call } from "./call"
-import { Agent } from "../index"
-import { NarratoryResponse } from "../internalInterfaces"
+import { Agent, DEFAULT_LANGUAGE, DEFAULT_REGION } from "narratory-lib"
+import { NarratoryResponse } from "../interfaces"
 import { printDebugMessage } from "../helpers"
 import * as fs from "fs"
 import * as readline from "readline"
@@ -42,6 +42,7 @@ export async function chat({
   const response = await call({
     googleCredentials: agent.googleCredentials,
     language: agent.language,
+    region: agent.region ? agent.region : DEFAULT_REGION,
     event: startEvent,
     local,
   }) // Initiate the chat with the welcome event
@@ -112,6 +113,7 @@ function handleResponseWithChat({
                 language: agent.language,
                 googleCredentials: agent.googleCredentials,
                 message: input,
+                region: agent.region ? agent.region : DEFAULT_REGION,
                 local,
               }).then((response) =>
                 handleResponseWithChat({
@@ -187,6 +189,7 @@ async function handleResponseWithScript({
             ...response,
             language: agent.language,
             googleCredentials: agent.googleCredentials,
+            region: agent.region ? agent.region : DEFAULT_REGION,
             message: input,
             local,
           })

@@ -1,4 +1,4 @@
-import { Agent } from "../interfaces"
+import { Agent } from "narratory-lib"
 
 export const validateAgentCredentialsFormat = (agent: Agent) => {
   if (!agent.narratoryKey) {

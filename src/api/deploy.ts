@@ -1,4 +1,4 @@
-import { Agent } from "../"
+import { Agent } from "narratory-lib"
 import { DEPLOY_AGENT_URL_LOCAL, DEPLOY_AGENT_URL } from "../settings"
 import Axios from "axios"
 

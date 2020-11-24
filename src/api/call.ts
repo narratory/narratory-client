@@ -1,15 +1,15 @@
 import { struct } from "pb-util"
 import { isEmpty, getSessionClient, parseDialogflowResponse } from "../helpers"
-import { API_VERSION, DIALOGFLOW_RETRY_ATTEMPTS, DEFAULT_LANGUAGE } from "../settings"
-import { GoogleCredentials } from "../interfaces"
-import { NarratoryResponse } from "../internalInterfaces"
+import { API_VERSION, DIALOGFLOW_RETRY_ATTEMPTS } from "../settings"
+import { DEFAULT_LANGUAGE, DialogflowRegion, GoogleCredentials, Language } from "narratory-lib"
+import { NarratoryResponse } from "../interfaces"
 
-import { Language } from "../data/languages"
 import v4 from "uuid/v4"
 
 export const call = async ({
   googleCredentials,
   language = DEFAULT_LANGUAGE,
+  region,
   sessionId,
   contexts,
   event,
@@ -19,6 +19,7 @@ export const call = async ({
 }: {
   googleCredentials: GoogleCredentials
   language?: Language
+  region: DialogflowRegion
   sessionId?: string
   contexts?: any
   event?: string
@@ -29,7 +30,7 @@ export const call = async ({
   let attempts = 0
   const _sessionId = sessionId ? sessionId : v4()
   const sessionClient = getSessionClient(googleCredentials)
-  const sessionPath = sessionClient.sessionPath(googleCredentials.project_id, _sessionId)
+  const sessionPath = sessionClient.projectLocationAgentSessionPath(googleCredentials.project_id, region, _sessionId)
   const previousContexts = contexts
   let timestampBefore: number
   let timestampAfter: number
@@ -76,7 +77,7 @@ export const call = async ({
 
     attempts++
     timestampBefore = Date.now()
-    let responses = (await sessionClient.detectIntent(input)).filter(Boolean) // Since sometimes, the responses array seems to have two extra, "undefined" values
+    let responses : any[] = (await sessionClient.detectIntent(input)).filter(Boolean) // Since sometimes, the responses array seems to have two extra, "undefined" values
     timestampAfter = Date.now()
 
     // If we get an error the first attempt, we do one retry. The nature of cloud functions is unfortunately that slow-starts might take enough time for dialogflow to neglect the webhook call

@@ -1,4 +1,4 @@
-import { Intent } from "../index"
+import { Intent } from "narratory-lib"
 import { listDir } from "../helpers"
 import * as fs from "fs"
 
