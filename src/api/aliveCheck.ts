@@ -1,6 +1,5 @@
 import { call } from "./call"
-import { Agent, DEFAULT_REGION } from "narratory-lib"
-import { NarratoryResponse } from "../interfaces"
+import { Agent, DEFAULT_REGION, NarratoryResponse } from "narratory-lib"
 import { printDebugMessage, sleep } from "../helpers"
 import { v4 } from "uuid"
 
